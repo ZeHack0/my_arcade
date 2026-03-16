@@ -1,0 +1,16 @@
+# Fichiers de compilation
+*.a
+*.o
+*.out
+*.exe
+
+# Dossiers de build
+.build/
+
+# Fichiers spécifiques à l'éditeur/IDE
+.idea/
+.vscode/
+vgcore.*
+
+# Fichiers spécifiques au projet
+arcade
