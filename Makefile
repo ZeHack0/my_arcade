@@ -13,10 +13,15 @@ CC := g++
 
 BUILD_DIR := .build
 
-SRC := $(shell find src -name '*.cpp')
-OBJ := $(SRC:%.cpp=.build/%.o)
+SRC_MAIN := $(shell find src/core_src/ -name '*.cpp')
+SRC_LIBS := $(shell find src/lib_src/ -name 'lib*.cpp')
+SRC_GAMES := $(shell find src/games_src/ -name 'games*.cpp')
 
-LDFLAGS =
+OBJ_MAIN = $(SRC_MAIN:%.cpp=$(BUILD_DIR)/%.o)
+LIBS_SO = $(notdir $(SRC_LIBS:%.cpp=%.so))
+GAMES_SO = $(notdir $(SRC_GAMES:%.cpp=%.so))
+
+LDFLAGS = -ldl
 
 GRE := \033[0;32m
 GRA := \033[0;37m
@@ -24,11 +29,31 @@ BLU := \033[0;34m
 RED := \033[0;31m
 
 all:
-	@ $(MAKE) $(NAME) -j --no-print-directory
+	@ $(MAKE) $(LIBS_SO) $(GAMES_SO) $(NAME) -j --no-print-directory
 
-$(NAME): $(OBJ)
-	@ $(CC) -o $(NAME) $(OBJ) $(CPPFLAGS)
-	@ echo -e "$(BLU)===--- $(GRE)Compiled$(GRA) < $@ > $(BLU)---===$(GRA)"
+$(NAME): $(LIBS_SO) $(GAMES_SO) $(OBJ_MAIN)
+	@ $(CC) -o $(NAME) $(OBJ_MAIN) $(CPPFLAGS) $(LDFLAGS)
+	@ echo -e "$(BLU)===--- $(GRE)Compiled$(GRA) <$@> $(BLU)---===$(GRA)"
+
+%.so: src/lib_src/%.cpp
+	@ $(CC) $(CPPFLAGS) -fPIC -shared $< -o $@
+	@ echo -e "$(GRE)Compiled$(GRA) $<"
+	@ echo -e "$(BLU)===--- $(GRE)Compiled Library$(GRA) <$@> $(BLU)---===$(GRA)"
+
+%.so: src/games_src/%.cpp
+	@ $(CC) $(CPPFLAGS) -fPIC -shared $< -o $@
+	@ echo -e "$(GRE)Compiled$(GRA) $<"
+	@ echo -e "$(BLU)===--- $(GRE)Compiled Games$(GRA) <$@> $(BLU)---===$(GRA)"
+
+core: $(OBJ_MAIN)
+	@ $(CC) -o $(NAME) $(OBJ_MAIN) $(CPPFLAGS) $(LDFLAGS)
+	@ echo -e "$(BLU)===--- $(GRE)Compiled$(GRA) <$@> $(BLU)---===$(GRA)"
+
+games: $(GAMES_SO)
+	@ echo -e "$(BLU)===--- $(GRE)Compiled Games$(GRA) $(BLU)---===$(GRA)"
+
+graphicals: $(LIBS_SO)
+	@ echo -e "$(BLU)===--- $(GRE)Compiled Graphicals$(GRA) $(BLU)---===$(GRA)"
 
 $(BUILD_DIR)/%.o: %.cpp
 	@ mkdir -p $(dir $@)
@@ -36,12 +61,12 @@ $(BUILD_DIR)/%.o: %.cpp
 	@ echo -e "$(GRE)Compiled$(GRA) $<"
 
 clean:
-	@ $(RM) $(OBJ) $(TOBJ)
+	@ $(RM) $(OBJ_MAIN) $(TOBJ)
 	@ $(RM) *.a
 	@ echo -e "$(RED)Cleaned$(GRA)"
 
 fclean: clean
-	@ $(RM) $(NAME)
+	@ $(RM) $(NAME) $(LIBS_SO) $(GAMES_SO)
 	@ $(RM) -r $(BUILD_DIR)
 	@ $(RM) *.a
 	@ echo -e "$(RED)Force cleaned$(GRA)"
@@ -49,4 +74,4 @@ fclean: clean
 re: fclean
 	@ $(MAKE) all -j --no-print-directory
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re core games graphicals
