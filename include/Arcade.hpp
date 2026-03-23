@@ -6,8 +6,9 @@
 */
 
 #pragma once
-
-enum class LibType {
-    GRAPHICAL,
-    GAME
-};
+namespace arcade {
+    enum class LibType {
+        GRAPHICAL,
+        GAME
+    };
+}
