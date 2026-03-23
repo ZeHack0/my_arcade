@@ -14,14 +14,17 @@ CC := g++
 BUILD_DIR := .build
 
 SRC_MAIN := $(shell find src/core_src/ -name '*.cpp')
-SRC_LIBS := $(shell find src/lib_src/ -name 'lib*.cpp')
+SRC_LIBS := $(shell find src/lib_src/ -name '*.cpp')
 SRC_GAMES := $(shell find src/games_src/ -name 'games*.cpp')
 
 OBJ_MAIN = $(SRC_MAIN:%.cpp=$(BUILD_DIR)/%.o)
 LIBS_SO = $(notdir $(SRC_LIBS:%.cpp=%.so))
 GAMES_SO = $(notdir $(SRC_GAMES:%.cpp=%.so))
 
-LDFLAGS = -ldl
+LDFLAGS = -ldl -lncurses -lsfml-graphics -lsfml-window -lsfml-system
+
+# macOS (Homebrew) LDFLAGS paths
+LDFLAGS += -L/opt/homebrew/lib -L/usr/local/lib
 
 GRE := \033[0;32m
 GRA := \033[0;37m
@@ -36,12 +39,12 @@ $(NAME): $(LIBS_SO) $(GAMES_SO) $(OBJ_MAIN)
 	@ echo -e "$(BLU)===--- $(GRE)Compiled$(GRA) <$@> $(BLU)---===$(GRA)"
 
 %.so: src/lib_src/%.cpp
-	@ $(CC) $(CPPFLAGS) -fPIC -shared $< -o $@
+	@ $(CC) $(CPPFLAGS) -fPIC -shared $< -o $@ $(LDFLAGS)
 	@ echo -e "$(GRE)Compiled$(GRA) $<"
 	@ echo -e "$(BLU)===--- $(GRE)Compiled Library$(GRA) <$@> $(BLU)---===$(GRA)"
 
 %.so: src/games_src/%.cpp
-	@ $(CC) $(CPPFLAGS) -fPIC -shared $< -o $@
+	@ $(CC) $(CPPFLAGS) -fPIC -shared $< -o $@ $(LDFLAGS)
 	@ echo -e "$(GRE)Compiled$(GRA) $<"
 	@ echo -e "$(BLU)===--- $(GRE)Compiled Games$(GRA) <$@> $(BLU)---===$(GRA)"
 
