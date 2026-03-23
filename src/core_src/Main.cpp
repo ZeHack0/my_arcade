@@ -5,33 +5,45 @@
 ** Main
 */
 
+#include "Arcade.hpp"
 #include <iostream>
 #include <vector>
 #include <dlfcn.h>
 
 int main(int ac, char **av) {
-
-    std::vector<void*> handles;
-    std::vector<void (*)()> entries;
-    (void)ac;
-
-    for (int i = 1; av[i] != nullptr; i++) {
-        void *h = dlopen(av[i], RTLD_LAZY);
-        if (h) {
-            handles.push_back(h);
-            void (*f)() = (void (*)())dlsym(h, "entryPoint");
-            if (f) entries.push_back(f);
-        }
+    if (ac != 2) {
+        std::cerr << "Usage: " << av[0] << " <library_path>" << std::endl;
+        return 84;
     }
 
-    for (auto entry : entries) {
-        entry();
+    void *handle = dlopen(av[1], RTLD_LAZY);
+    if (!handle) {
+        std::cerr << "Error: " << dlerror() << std::endl;
+        return 84;
     }
 
-    for (auto h : handles) {
-        dlclose(h);
+    auto getType = (LibType (*)())(dlsym(handle, "getType"));
+    if (!getType) {
+        std::cerr << "Error: " << dlerror() << std::endl;
+        dlclose(handle);
+        return 84;
     }
+
+    if (getType() == LibType::GAME) {
+        std::cerr << "Error: The provided library is a game, but a graphical library is required." << std::endl;
+        dlclose(handle);
+        return 84;
+    }
+
+    auto entryPoint = (void (*)())(dlsym(handle, "entryPoint"));
+    if (!entryPoint) {
+        std::cerr << "Error: " << dlerror() << std::endl;
+        dlclose(handle);
+        return 84;
+    }
+
+    entryPoint();
+    dlclose(handle);
 
     return 0;
-
 }

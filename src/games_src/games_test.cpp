@@ -5,6 +5,7 @@
 ** lib_test
 */
 
+#include "Arcade.hpp"
 #include <iostream>
 
 extern "C" {
@@ -19,6 +20,10 @@ extern "C" {
 
     void entryPoint() {
         std::cout << "[gametest]: test game available..." << std::endl;
+    }
+
+    LibType getType() {
+        return LibType::GAME;
     }
 
 }
