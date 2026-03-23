@@ -38,7 +38,7 @@ void arcade::ACube::setred(int r)
     _red = r;
 }
 
-void arcade::AACube::setgreen(int g)
+void arcade::ACube::setgreen(int g)
 {
     _green = g;
 }
