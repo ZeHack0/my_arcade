@@ -13,6 +13,14 @@ CC := g++
 
 BUILD_DIR := .build
 
+UNAME_S := $(shell uname -s)
+
+ifeq ($(UNAME_S),Darwin)
+	RPATH = -Wl,-rpath,/usr/local/lib
+else
+	RPATH =
+endif
+
 SRC_MAIN := $(shell find src/core_src/ -name '*.cpp')
 SRC_LIBS := $(shell find src/lib_src/ -name '*.cpp')
 SRC_GAMES := $(shell find src/games_src/ -name 'games*.cpp')
@@ -21,10 +29,7 @@ OBJ_MAIN = $(SRC_MAIN:%.cpp=$(BUILD_DIR)/%.o)
 LIBS_SO = $(notdir $(SRC_LIBS:%.cpp=%.so))
 GAMES_SO = $(notdir $(SRC_GAMES:%.cpp=%.so))
 
-LDFLAGS = -ldl -lncurses -lsfml-graphics -lsfml-window -lsfml-system
-
-# macOS (Homebrew) LDFLAGS paths
-LDFLAGS += -L/opt/homebrew/lib -L/usr/local/lib
+LDFLAGS = -ldl -lncurses -lsfml-graphics -lsfml-window -lsfml-system $(RPATH)
 
 GRE := \033[0;32m
 GRA := \033[0;37m
