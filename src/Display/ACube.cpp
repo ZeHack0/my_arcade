@@ -14,6 +14,13 @@ arcade::ACube::ACube(int r, int g, int b)
     _blue = b;
 }
 
+void arcade::ACube::setPixel(int r, int g, int b)
+{
+    _red = r;
+    _green = g;
+    _red = r;
+}
+
 int arcade::ACube::getblue()
 {
     return _blue;

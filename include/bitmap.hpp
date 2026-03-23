@@ -15,6 +15,7 @@ namespace arcade {
         int getblue();
         int getred();
         int getgreen();
+        void setPixel(int, int, int);
         void setblue(int);
         void setred(int);
         void setgreen(int);
