@@ -7,7 +7,6 @@ namespace arcade {
         int _red;
         int _blue;
         int _green;
-
         public:
         ACube();
         ACube(int, int, int);
@@ -19,5 +18,8 @@ namespace arcade {
         void setblue(int);
         void setred(int);
         void setgreen(int);
+        bool operator<(const ACube& o) const {
+            return _blue <= o._blue;
+        }
     };
 }
