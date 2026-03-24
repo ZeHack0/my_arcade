@@ -43,7 +43,7 @@ namespace arcade {
         Undefined
     };
 
-    struct event {
+    struct ArcadeEvent {
         Key key;
         int x;
         int y;

@@ -22,8 +22,8 @@ extern "C" {
         std::cout << "[libtest]: test library available..." << std::endl;
     }
 
-    LibType getType() {
-        return LibType::GRAPHICAL;
+    arcade::LibType getType() {
+        return arcade::LibType::GRAPHICAL;
     }
 
 }

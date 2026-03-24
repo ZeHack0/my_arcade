@@ -22,8 +22,8 @@ extern "C" {
         std::cout << "[gametest]: test game available..." << std::endl;
     }
 
-    LibType getType() {
-        return LibType::GAME;
+    arcade::LibType getType() {
+        return arcade::LibType::GAME;
     }
 
 }

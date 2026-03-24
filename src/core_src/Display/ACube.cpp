@@ -18,7 +18,7 @@ void arcade::ACube::setPixel(int r, int g, int b)
 {
     _red = r;
     _green = g;
-    _red = r;
+    _blue = b;
 }
 
 int arcade::ACube::getblue()

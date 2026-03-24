@@ -22,14 +22,14 @@ int main(int ac, char **av) {
         return 84;
     }
 
-    auto getType = (LibType (*)())(dlsym(handle, "getType"));
+    auto getType = (arcade::LibType (*)())(dlsym(handle, "getType"));
     if (!getType) {
         std::cerr << "Error: " << dlerror() << std::endl;
         dlclose(handle);
         return 84;
     }
 
-    if (getType() == LibType::GAME) {
+    if (getType() == arcade::LibType::GAME) {
         std::cerr << "Error: The provided library is a game, but a graphical library is required." << std::endl;
         dlclose(handle);
         return 84;

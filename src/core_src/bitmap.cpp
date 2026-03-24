@@ -6,8 +6,8 @@ std::map<arcade::ACube, std::pair<std::size_t, std::size_t>> init_bit_map(std::s
 {
     std::map<arcade::ACube, std::pair<std::size_t, std::size_t>> m;
     std::pair<std::size_t, std::size_t> p;
-    for (int i = 0;  i <= line; i++) {
-        for (int j = 0; j <= column; j++) {
+    for (std::size_t i = 0;  i <= line; i++) {
+        for (std::size_t j = 0; j <= column; j++) {
             p.first = j;
             p.second = i;
             m.insert({arcade::ACube(0, 0, 0), p});
