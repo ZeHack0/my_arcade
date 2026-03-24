@@ -123,6 +123,8 @@ arcade::ArcadeEvent SFMLEvent(sf::Event event)
             ev.key = arcade::Key::RightClick;
         if (event.mouseButton.button == sf::Mouse::Left)
             ev.key = arcade::Key::LeftClick;
+        if (event.mouseButton.button == sf::Mouse::Middle)
+            ev.key = arcade::Key::MiddleClick;
     }
     ev.x = sf::Mouse::getPosition().x;
     ev.y = sf::Mouse::getPosition().y;
