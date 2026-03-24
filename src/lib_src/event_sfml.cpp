@@ -93,16 +93,38 @@ static const std::map<sf::Keyboard::Key, arcade::Key> keyMap = {
     {sf::Keyboard::Right, arcade::Key::ArrowRight},
     {sf::Keyboard::Up, arcade::Key::ArrowUp},
     {sf::Keyboard::Down, arcade::Key::ArrowDown},
+
+    {sf::Keyboard::F1, arcade::Key::F1},
+    {sf::Keyboard::F2, arcade::Key::F1},
+    {sf::Keyboard::F3, arcade::Key::F1},
+    {sf::Keyboard::F4, arcade::Key::F1},
+    {sf::Keyboard::F5, arcade::Key::F1},
+    {sf::Keyboard::F6, arcade::Key::F1},
+    {sf::Keyboard::F7, arcade::Key::F1},
+    {sf::Keyboard::F8, arcade::Key::F1},
+    {sf::Keyboard::F9, arcade::Key::F1},
+    {sf::Keyboard::F10, arcade::Key::F10},
+    {sf::Keyboard::F11, arcade::Key::F11},
+    {sf::Keyboard::F12, arcade::Key::F12}
 };
 
 arcade::ArcadeEvent SFMLEvent(sf::Event event)
 {
     arcade::ArcadeEvent ev;
 
+    ev.key = arcade::Key::Undefined;
     if (event.type == sf::Event::KeyPressed) {
         auto it = keyMap.find(event.key.code);
         if (it != keyMap.end())
             ev.key = it->second;
     }
+    if (event.type == sf::Event::MouseButtonPressed) {
+        if (event.mouseButton.button == sf::Mouse::Right)
+            ev.key = arcade::Key::RightClick;
+        if (event.mouseButton.button == sf::Mouse::Left)
+            ev.key = arcade::Key::LeftClick;
+    }
+    ev.x = sf::Mouse::getPosition().x;
+    ev.y = sf::Mouse::getPosition().y;
     return ev;
 }
