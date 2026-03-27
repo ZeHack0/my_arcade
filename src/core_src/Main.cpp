@@ -13,11 +13,7 @@
 namespace arcade
 {
     int main(int ac, char **av) {
-        if (ac != 2) {
-            std::cerr << "Usage: " << av[0] << " <library_path>" << std::endl;
-            return 84;
-        }
-
+        (void)ac;
         void *handle = dlopen(av[1], RTLD_LAZY);
         if (!handle) {
             std::cerr << "Error: " << dlerror() << std::endl;
@@ -52,5 +48,11 @@ namespace arcade
 }
 
 int main(int ac, char **av) {
+
+    if (ac != 2) {
+        std::cerr << "Usage: " << av[0] << " <library_path>" << std::endl;
+        return 84;
+    }
+
     return arcade::main(ac, av);
 }
