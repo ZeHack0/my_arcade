@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdio>
+#include <SFML/Graphics.hpp>
 
 namespace arcade {
     class ACube {
@@ -22,4 +23,5 @@ namespace arcade {
             return _blue <= o._blue;
         }
     };
+    void display_bitmap(sf::RenderWindow &, std::map<std::pair<std::size_t, std::size_t>, ACube> &);
 }

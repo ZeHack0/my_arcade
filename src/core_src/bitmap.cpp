@@ -2,16 +2,11 @@
 #include <map>
 
 
-std::map<arcade::ACube, std::pair<std::size_t, std::size_t>> init_bit_map(std::size_t line, std::size_t column)
+std::map<std::pair<std::size_t, std::size_t>, arcade::ACube> init_bit_map(std::size_t line, std::size_t col)
 {
-    std::map<arcade::ACube, std::pair<std::size_t, std::size_t>> m;
-    std::pair<std::size_t, std::size_t> p;
-    for (std::size_t i = 0;  i <= line; i++) {
-        for (std::size_t j = 0; j <= column; j++) {
-            p.first = j;
-            p.second = i;
-            m.insert({arcade::ACube(0, 0, 0), p});
-        }
-    }
+    std::map<std::pair<std::size_t, std::size_t>, arcade::ACube> m;
+    for (std::size_t i = 0; i < line; i++)
+        for (std::size_t j = 0; j < col; j++)
+            m[{j, i}] = arcade::ACube(0, 0, 0);
     return m;
 }

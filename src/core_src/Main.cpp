@@ -9,12 +9,15 @@
 #include <iostream>
 #include <vector>
 #include <dlfcn.h>
+#include "core.hpp"
+
 
 int main(int ac, char **av) {
     if (ac != 2) {
         std::cerr << "Usage: " << av[0] << " <library_path>" << std::endl;
         return 84;
     }
+    arcade::AGlobal g;
 
     void *handle = dlopen(av[1], RTLD_LAZY);
     if (!handle) {
@@ -35,14 +38,14 @@ int main(int ac, char **av) {
         return 84;
     }
 
-    auto entryPoint = (void (*)())(dlsym(handle, "entryPoint"));
+    auto entryPoint = (void (*)(arcade::AGlobal &))(dlsym(handle, "entryPoint"));
     if (!entryPoint) {
         std::cerr << "Error: " << dlerror() << std::endl;
         dlclose(handle);
         return 84;
     }
 
-    entryPoint();
+    entryPoint(g);
     dlclose(handle);
 
     return 0;
