@@ -21,7 +21,7 @@ OBJ_MAIN = $(SRC_MAIN:%.cpp=$(BUILD_DIR)/%.o)
 LIBS_SO = $(notdir $(SRC_LIBS:%.cpp=%.so))
 GAMES_SO = $(notdir $(SRC_GAMES:%.cpp=%.so))
 
-LDFLAGS = -ldl -lncurses -lsfml-graphics -lsfml-window -lsfml-system
+LDFLAGS = -ldl -lncurses -lsfml-graphics -lsfml-window -lsfml-system -rdynamic
 
 # macOS (Homebrew) LDFLAGS paths
 LDFLAGS += -L/opt/homebrew/lib -L/usr/local/lib
