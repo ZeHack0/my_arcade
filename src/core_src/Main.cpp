@@ -52,5 +52,5 @@ namespace arcade
 }
 
 int main(int ac, char **av) {
-    return arcade::main(ac, av); // Ou déplacez toute la logique ici
+    return arcade::main(ac, av);
 }
