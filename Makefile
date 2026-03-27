@@ -16,8 +16,10 @@ BUILD_DIR := .build
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Darwin)
+	MAC_LDFLAGS = -L/opt/homebrew/lib -L/usr/local/lib
 	RPATH = -Wl,-rpath,/usr/local/lib
 else
+	MAC_LDFLAGS =
 	RPATH =
 endif
 
@@ -29,7 +31,7 @@ OBJ_MAIN = $(SRC_MAIN:%.cpp=$(BUILD_DIR)/%.o)
 LIBS_SO = $(notdir $(SRC_LIBS:%.cpp=%.so))
 GAMES_SO = $(notdir $(SRC_GAMES:%.cpp=%.so))
 
-LDFLAGS = -ldl -lncurses -lsfml-graphics -lsfml-window -lsfml-system $(RPATH)
+LDFLAGS = -ldl -lncurses -lsfml-graphics -lsfml-window -lsfml-system -lSDL2 $(RPATH) $(MAC_LDFLAGS)
 
 GRE := \033[0;32m
 GRA := \033[0;37m

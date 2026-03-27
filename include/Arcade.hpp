@@ -6,6 +6,7 @@
 */
 
 #pragma once
+
 namespace arcade {
     enum class LibType {
         GRAPHICAL,
