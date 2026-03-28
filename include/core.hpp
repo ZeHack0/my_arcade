@@ -26,10 +26,10 @@ namespace arcade {
 
         private:
             std::unique_ptr<IDisplayModule>_guiClass;
-            std::unique_ptr<IGameModule>_gameClass;
+            //std::unique_ptr<IGameModule>_gameClass;
 
-            ArcadeEvent _events;
-            GameData _gameData;
+            //ArcadeEvent _events;
+            //GameData _gameData;
 
 
     };
