@@ -8,6 +8,7 @@
 #include "Arcade.hpp"
 #include "GenericEvent.hpp"
 #include "core.hpp"
+#include <iostream>
 
 namespace arcade {
     extern "C" {

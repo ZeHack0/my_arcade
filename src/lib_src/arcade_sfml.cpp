@@ -6,14 +6,47 @@
 */
 
 #include "Arcade.hpp"
+#include "core.hpp"
+#include "IDisplayModule.hpp"
+#include "GameData.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "GenericEvent.hpp"
-#include "core.hpp"
 #include <map>
 
 namespace arcade
 {
+
+    class SfmlModule : public IDisplayModule{
+
+        public:
+            SfmlModule(): _window(sf::VideoMode(800, 600), "Arcade") {}
+
+            ArcadeEvent getEvents() override {
+                sf::Event event;
+                ArcadeEvent arcEvent{};
+                arcEvent.key = Undefined;
+
+                while (_window.pollEvent(event)) {
+                    if (event.type == sf::Event::Closed)
+                        _window.close();
+                }
+                return arcEvent;
+            }
+            void clear() override { _window.clear(); }
+            void draw(GameData data) override {
+                display_bitmap(_window, data.bitmap);
+            }
+            void display() override { _window.display(); }
+
+        private:
+            sf::RenderWindow _window;
+
+    };
+
+    extern "C" IDisplayModule *instantiate() {
+        return new SfmlModule();
+    }
+
     extern "C" {
 
         __attribute__((constructor)) void load_lib() {
