@@ -1,4 +1,4 @@
-#include "mapkey.hpp"
+#include "GenericEvent.hpp"
 #include "core.hpp"
 #include "Arcade.hpp"
 #include <SFML/Graphics.hpp>
@@ -108,25 +108,27 @@ static const std::map<sf::Keyboard::Key, arcade::Key> keyMap = {
     {sf::Keyboard::F12, arcade::Key::F12}
 };
 
-arcade::ArcadeEvent SFMLEvent(sf::Event event)
+namespace arcade {
+ArcadeEvent SFMLEvent(sf::Event event)
 {
-    arcade::ArcadeEvent ev;
+        arcade::ArcadeEvent ev;
 
-    ev.key = arcade::Key::Undefined;
-    if (event.type == sf::Event::KeyPressed) {
-        auto it = keyMap.find(event.key.code);
-        if (it != keyMap.end())
-            ev.key = it->second;
+        ev.key = arcade::Key::Undefined;
+        if (event.type == sf::Event::KeyPressed) {
+            auto it = keyMap.find(event.key.code);
+            if (it != keyMap.end())
+                ev.key = it->second;
+        }
+        if (event.type == sf::Event::MouseButtonPressed) {
+            if (event.mouseButton.button == sf::Mouse::Right)
+                ev.key = arcade::Key::RightClick;
+            if (event.mouseButton.button == sf::Mouse::Left)
+                ev.key = arcade::Key::LeftClick;
+            if (event.mouseButton.button == sf::Mouse::Middle)
+                ev.key = arcade::Key::MiddleClick;
+        }
+        ev.x = sf::Mouse::getPosition().x;
+        ev.y = sf::Mouse::getPosition().y;
+        return ev;
     }
-    if (event.type == sf::Event::MouseButtonPressed) {
-        if (event.mouseButton.button == sf::Mouse::Right)
-            ev.key = arcade::Key::RightClick;
-        if (event.mouseButton.button == sf::Mouse::Left)
-            ev.key = arcade::Key::LeftClick;
-        if (event.mouseButton.button == sf::Mouse::Middle)
-            ev.key = arcade::Key::MiddleClick;
-    }
-    ev.x = sf::Mouse::getPosition().x;
-    ev.y = sf::Mouse::getPosition().y;
-    return ev;
 }

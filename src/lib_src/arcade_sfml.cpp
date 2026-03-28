@@ -8,7 +8,9 @@
 #include "Arcade.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "GenericEvent.hpp"
 #include "core.hpp"
+#include <map>
 
 namespace arcade
 {
@@ -26,7 +28,8 @@ namespace arcade
             return LibType::GRAPHICAL;
         }
 
-        void entryPoint(AGlobal &glob) {
+        void entryPoint(AGlobal &glob)
+        {
             sf::RenderWindow window(sf::VideoMode(800, 600), "Arcade - SFML");
             int i = 0;
 
@@ -34,7 +37,7 @@ namespace arcade
                 sf::Event event;
                 while (window.pollEvent(event)) {
                     if (event.type == sf::Event::Closed)
-                    window.close();
+                        window.close();
                 }
                 glob.ModifyMap(std::pair(10, 10), i, i, i);
                 i++;
@@ -45,6 +48,5 @@ namespace arcade
                 window.display();
             }
         }
-
     }
 }

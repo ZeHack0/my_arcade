@@ -5,6 +5,8 @@
 namespace arcade {
     class AGlobal {
         private:
+        std::size_t _x;
+        std::size_t _y;
         std::map<std::pair<std::size_t, std::size_t>, ACube> bitmap;
         public:
         AGlobal();
@@ -12,6 +14,12 @@ namespace arcade {
         std::map<std::pair<std::size_t, std::size_t>, ACube> &getMap() {
             return bitmap;
         };
+        std::size_t get_x() {
+            return _x;
+        }
+        std::size_t get_y() {
+            return _y;
+        }
         void ModifyMap(std::pair<std::size_t, std::size_t>, int, int, int);
     };
 }

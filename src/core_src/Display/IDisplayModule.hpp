@@ -2,7 +2,5 @@
 
 class IDisplay
 {
-    public:
-
-    private:
+    public :
 };

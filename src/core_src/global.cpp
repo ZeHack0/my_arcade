@@ -3,7 +3,9 @@
 
 arcade::AGlobal::AGlobal()
 {
-    bitmap = init_bit_map(300, 300);
+    bitmap = init_bit_map(100, 100);
+    _x = 100;
+    _y = 100;
 }
 
 void arcade::AGlobal::ModifyMap(std::pair<std::size_t, std::size_t> pos, int r, int g, int b)
