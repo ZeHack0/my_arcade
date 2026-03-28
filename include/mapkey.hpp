@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2026
+** arcade
+** File description:
+** mapkey
+*/
+
 #pragma once
 
 namespace arcade {
