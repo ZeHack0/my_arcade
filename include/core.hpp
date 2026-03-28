@@ -10,6 +10,7 @@
 #include "IDisplayModule.hpp"
 #include <map>
 #include <iostream>
+#include <memory>
 
 namespace arcade {
 
