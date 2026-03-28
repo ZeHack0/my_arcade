@@ -12,41 +12,43 @@
 #include "core.hpp"
 
 
-int main(int ac, char **av) {
-    if (ac != 2) {
-        std::cerr << "Usage: " << av[0] << " <library_path>" << std::endl;
-        return 84;
-    }
-    arcade::AGlobal g;
+namespace arcade
+{
+    int main(int ac, char **av) {
+        if (ac != 2) {
+            std::cerr << "Usage: " << av[0] << " <library_path>" << std::endl;
+            return 84;
+        }
 
-    void *handle = dlopen(av[1], RTLD_LAZY);
-    if (!handle) {
-        std::cerr << "Error: " << dlerror() << std::endl;
-        return 84;
-    }
+        void *handle = dlopen(av[1], RTLD_LAZY);
+        if (!handle) {
+            std::cerr << "Error: " << dlerror() << std::endl;
+            return 84;
+        }
 
-    auto getType = (arcade::LibType (*)())(dlsym(handle, "getType"));
-    if (!getType) {
-        std::cerr << "Error: " << dlerror() << std::endl;
+        auto getType = (LibType (*)())(dlsym(handle, "getType"));
+        if (!getType) {
+            std::cerr << "Error: " << dlerror() << std::endl;
+            dlclose(handle);
+            return 84;
+        }
+
+        if (getType() == LibType::GAME) {
+            std::cerr << "Error: The provided library is a game, but a graphical library is required." << std::endl;
+            dlclose(handle);
+            return 84;
+        }
+
+        auto entryPoint = (void (*)())(dlsym(handle, "entryPoint"));
+        if (!entryPoint) {
+            std::cerr << "Error: " << dlerror() << std::endl;
+            dlclose(handle);
+            return 84;
+        }
+
+        entryPoint();
         dlclose(handle);
-        return 84;
+
+        return 0;
     }
-
-    if (getType() == arcade::LibType::GAME) {
-        std::cerr << "Error: The provided library is a game, but a graphical library is required." << std::endl;
-        dlclose(handle);
-        return 84;
-    }
-
-    auto entryPoint = (void (*)(arcade::AGlobal &))(dlsym(handle, "entryPoint"));
-    if (!entryPoint) {
-        std::cerr << "Error: " << dlerror() << std::endl;
-        dlclose(handle);
-        return 84;
-    }
-
-    entryPoint(g);
-    dlclose(handle);
-
-    return 0;
 }
