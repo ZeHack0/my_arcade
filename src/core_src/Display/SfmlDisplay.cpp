@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2026
+** arcade
+** File description:
+** SfmlDisplay
+*/
+
 #include "bitmap.hpp"
 #include "core.hpp"
 #include "Arcade.hpp"

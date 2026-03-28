@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2026
+** arcade
+** File description:
+** global
+*/
+
 #include "core.hpp"
 #include "bitmap.hpp"
 

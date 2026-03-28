@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2026
+** arcade
+** File description:
+** event_sfml
+*/
+
 #include "GenericEvent.hpp"
 #include "core.hpp"
 #include "Arcade.hpp"

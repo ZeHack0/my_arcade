@@ -33,14 +33,16 @@ namespace arcade
             return 84;
         }
 
-        auto entryPoint = (void (*)())(dlsym(handle, "entryPoint"));
+        auto entryPoint = (void (*)(AGlobal &))(dlsym(handle, "entryPoint"));
         if (!entryPoint) {
             std::cerr << "Error: " << dlerror() << std::endl;
             dlclose(handle);
             return 84;
         }
 
-        entryPoint();
+        AGlobal globalState;
+
+        entryPoint(globalState);
         dlclose(handle);
 
         return 0;

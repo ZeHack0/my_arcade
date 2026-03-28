@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2026
+** arcade
+** File description:
+** ACube
+*/
+
 #include "bitmap.hpp"
 
 arcade::ACube::ACube()

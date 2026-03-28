@@ -16,7 +16,7 @@ BUILD_DIR := .build
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Darwin)
-	MAC_LDFLAGS = -L/opt/homebrew/lib -L/usr/local/lib
+	MAC_LDFLAGS = -L/opt/homebrew/lib -L/usr/local/lib -undefined dynamic_lookup
 	RPATH = -Wl,-rpath,/usr/local/lib
 else
 	MAC_LDFLAGS =
@@ -25,7 +25,7 @@ endif
 
 SRC_MAIN := $(shell find src/core_src/ -name '*.cpp')
 SRC_LIBS := $(shell find src/lib_src/ -name '*.cpp')
-SRC_GAMES := $(shell find src/games_src/ -name 'games*.cpp')
+SRC_GAMES := $(shell find src/games_src/ -name '*.cpp')
 
 OBJ_MAIN = $(SRC_MAIN:%.cpp=$(BUILD_DIR)/%.o)
 LIBS_SO = $(notdir $(SRC_LIBS:%.cpp=%.so))
