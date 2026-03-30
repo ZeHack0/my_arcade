@@ -5,7 +5,7 @@
 ** global
 */
 
-#include "core.hpp"
+#include "Core.hpp"
 #include "bitmap.hpp"
 
 arcade::AGlobal::AGlobal()

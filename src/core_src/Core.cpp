@@ -5,28 +5,23 @@
 ** Core
 */
 
-#include "core.hpp"
+#include "Core.hpp"
 
 namespace arcade
 {
     void Core::run() {
         while (true) {
-            // 1. getEvents
             ArcadeEvent event = _gui->getEvents();
 
-            // 2. update
+            if (event.key == Key::Escape)
+                break;
+
             _game->update(event);
 
-            // 3. getGameData
-            _gameData = _game->getGameData();
+            GameData data = _game->getGameData();
 
-            // 4. clear
             _gui->clear();
-
-            // 5. draw
-            _gui->draw(_gameData);
-
-            // 6. display
+            _gui->draw(data);
             _gui->display();
         }
     }

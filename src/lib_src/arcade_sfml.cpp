@@ -6,80 +6,81 @@
 */
 
 #include "Arcade.hpp"
-#include "core.hpp"
 #include "IDisplayModule.hpp"
 #include "GameData.hpp"
+#include "GenericEvent.hpp"
+#include "bitmap.hpp"
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include <map>
 
-namespace arcade
-{
+namespace arcade {
 
-    class SfmlModule : public IDisplayModule{
+    static const std::map<sf::Keyboard::Key, Key> SFML_KEY_MAP = {
+        {sf::Keyboard::Up,     Key::ArrowUp},
+        {sf::Keyboard::Down,   Key::ArrowDown},
+        {sf::Keyboard::Left,   Key::ArrowLeft},
+        {sf::Keyboard::Right,  Key::ArrowRight},
+        {sf::Keyboard::Escape, Key::Escape},
+        {sf::Keyboard::R,      Key::R},
+        {sf::Keyboard::Q,      Key::Q},
+        {sf::Keyboard::Space,  Key::Space},
+    };
 
+    class SfmlModule : public IDisplayModule {
         public:
-            SfmlModule(): _window(sf::VideoMode(800, 600), "Arcade") {}
+            SfmlModule() : _window(sf::VideoMode(800, 600), "Arcade - SFML") {
+                _window.setFramerateLimit(60);
+            }
 
             ArcadeEvent getEvents() override {
-                sf::Event event;
-                ArcadeEvent arcEvent{};
-                arcEvent.key = Undefined;
+                ArcadeEvent ev{};
+                ev.key = Key::Undefined;
 
+                sf::Event event;
                 while (_window.pollEvent(event)) {
                     if (event.type == sf::Event::Closed)
-                        _window.close();
+                        ev.key = Key::Escape;
+                    if (event.type == sf::Event::KeyPressed) {
+                        auto it = SFML_KEY_MAP.find(event.key.code);
+                        if (it != SFML_KEY_MAP.end())
+                            ev.key = it->second;
+                    }
                 }
-                return arcEvent;
+                return ev;
             }
-            void clear() override { _window.clear(); }
+
+            void clear() override {
+                _window.clear(sf::Color::Black);
+            }
+
             void draw(GameData data) override {
-                display_bitmap(_window, data.bitmap);
+                const float CELL = 20.0f;
+                sf::RectangleShape cell(sf::Vector2f(CELL - 1, CELL - 1));
+
+                for (auto &[pos, cube] : data.bitmap) {
+                    if (!cube.getred() && !cube.getgreen() && !cube.getblue())
+                        continue;
+                    cell.setPosition(pos.first * CELL, pos.second * CELL);
+                    cell.setFillColor(sf::Color(
+                        cube.getred(),
+                        cube.getgreen(),
+                        cube.getblue()
+                    ));
+                    _window.draw(cell);
+                }
             }
-            void display() override { _window.display(); }
+
+            void display() override {
+                _window.display();
+            }
 
         private:
             sf::RenderWindow _window;
-
     };
 
-    extern "C" IDisplayModule *instantiate() {
-        return new SfmlModule();
-    }
-
     extern "C" {
-
-        __attribute__((constructor)) void load_lib() {
-            std::cout << "[arcade_sfml]: Loading SFML library..." << std::endl;
-        }
-
-        __attribute__((destructor)) void unload_lib() {
-            std::cout << "[arcade_sfml]: closing SFMl library..." << std::endl;
-        }
-
-        LibType getType() {
-            return LibType::GRAPHICAL;
-        }
-
-        void entryPoint(AGlobal &glob)
-        {
-            sf::RenderWindow window(sf::VideoMode(800, 600), "Arcade - SFML");
-            int i = 0;
-
-            while (window.isOpen()) {
-                sf::Event event;
-                while (window.pollEvent(event)) {
-                    if (event.type == sf::Event::Closed)
-                        window.close();
-                }
-                glob.ModifyMap(std::pair(10, 10), i, i, i);
-                i++;
-                if (i >= 255)
-                    i = -255;
-                window.clear();
-                display_bitmap(window, glob.getMap());
-                window.display();
-            }
-        }
+        IDisplayModule *instance() { return new SfmlModule(); }
+        LibType getType()          { return LibType::GRAPHICAL; }
     }
+
 }

@@ -15,6 +15,8 @@ BUILD_DIR := .build
 
 UNAME_S := $(shell uname -s)
 
+LIB_DIR := ./lib
+
 ifeq ($(UNAME_S),Darwin)
 	MAC_LDFLAGS = -L/opt/homebrew/lib -L/usr/local/lib -undefined dynamic_lookup
 	RPATH = -Wl,-rpath,/usr/local/lib
@@ -28,8 +30,8 @@ SRC_LIBS := $(shell find src/lib_src/ -name '*.cpp')
 SRC_GAMES := $(shell find src/games_src/ -name '*.cpp')
 
 OBJ_MAIN = $(SRC_MAIN:%.cpp=$(BUILD_DIR)/%.o)
-LIBS_SO = $(notdir $(SRC_LIBS:%.cpp=%.so))
-GAMES_SO = $(notdir $(SRC_GAMES:%.cpp=%.so))
+LIBS_SO  = $(addprefix $(LIB_DIR)/, $(notdir $(SRC_LIBS:%.cpp=%.so)))
+GAMES_SO = $(addprefix $(LIB_DIR)/, $(notdir $(SRC_GAMES:%.cpp=%.so)))
 
 LDFLAGS = -ldl -lncurses -lsfml-graphics -lsfml-window -lsfml-system -lSDL2 $(RPATH) $(MAC_LDFLAGS) -rdynamic
 
@@ -45,14 +47,14 @@ $(NAME): $(LIBS_SO) $(GAMES_SO) $(OBJ_MAIN)
 	@ $(CC) -o $(NAME) $(OBJ_MAIN) $(CPPFLAGS) $(LDFLAGS)
 	@ echo -e "$(BLU)===--- $(GRE)Compiled$(GRA) <$@> $(BLU)---===$(GRA)"
 
-%.so: src/lib_src/%.cpp
+$(LIB_DIR)/%.so: src/lib_src/%.cpp
+	@ mkdir -p $(LIB_DIR)
 	@ $(CC) $(CPPFLAGS) -fPIC -shared $< -o $@ $(LDFLAGS)
-	@ echo -e "$(GRE)Compiled$(GRA) $<"
 	@ echo -e "$(BLU)===--- $(GRE)Compiled Library$(GRA) <$@> $(BLU)---===$(GRA)"
 
-%.so: src/games_src/%.cpp
+$(LIB_DIR)/%.so: src/games_src/%.cpp
+	@ mkdir -p $(LIB_DIR)
 	@ $(CC) $(CPPFLAGS) -fPIC -shared $< -o $@ $(LDFLAGS)
-	@ echo -e "$(GRE)Compiled$(GRA) $<"
 	@ echo -e "$(BLU)===--- $(GRE)Compiled Games$(GRA) <$@> $(BLU)---===$(GRA)"
 
 core: $(OBJ_MAIN)
@@ -77,7 +79,7 @@ clean:
 
 fclean: clean
 	@ $(RM) $(NAME) $(LIBS_SO) $(GAMES_SO)
-	@ $(RM) -r $(BUILD_DIR)
+	@ $(RM) -r $(BUILD_DIR) $(LIB_DIR)
 	@ $(RM) *.a
 	@ echo -e "$(RED)Force cleaned$(GRA)"
 

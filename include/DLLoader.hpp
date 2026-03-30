@@ -33,6 +33,14 @@ namespace arcade {
                 return creator();
             }
 
+            template <typename Sig>
+            std::function<Sig> getSymbol(const std::string &name){
+                auto *sym = dlsym(_handle, name.c_str());
+                if (!sym)
+                    return nullptr;
+                return reinterpret_cast<Sig*>(sym);
+            }
+
         private:
             void *_handle;
 
