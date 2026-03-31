@@ -6,28 +6,41 @@
 */
 
 #include "core.hpp"
+#include "DLLoader.hpp"
+#include "bitmap.hpp"
+
 
 namespace arcade
 {
+    Core::Core(const std::string &libpath)
+    {
+        DLLoader guiLoader = DLLoader(libpath);
+        _events = {Undefined, 0, 0};
+
+        _guiClass = std::unique_ptr<IDisplayModule>(guiLoader.getInstance<IDisplayModule>());
+
+        _gameData.bitmap = init_bit_map(100, 100);
+    }
+
     void Core::run() {
         while (true) {
             // 1. getEvents
-            ArcadeEvent event = _gui->getEvents();
+            ArcadeEvent event = _guiClass->getEvents();
 
             // 2. update
-            _game->update(event);
+            _gameClass->update(event);
 
             // 3. getGameData
-            _gameData = _game->getGameData();
+            _gameData = _gameClass->getGameData();
 
             // 4. clear
-            _gui->clear();
+            _guiClass->clear();
 
             // 5. draw
-            _gui->draw(_gameData);
+            _guiClass->draw(_gameData);
 
             // 6. display
-            _gui->display();
+            _guiClass->display();
         }
     }
 

@@ -8,6 +8,7 @@
 #pragma once
 #include <dlfcn.h>
 #include <string>
+#include <stdexcept>
 
 namespace arcade {
 
