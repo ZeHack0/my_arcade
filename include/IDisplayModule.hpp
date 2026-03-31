@@ -6,6 +6,8 @@
 */
 
 #pragma once
+#include "GenericEvent.hpp"
+#include "GameData.hpp"
 
 namespace arcade {
 
@@ -14,9 +16,9 @@ namespace arcade {
         public:
             virtual ~IDisplayModule() = default;
 
-            //virtual ArcadeEvent getEvents() = 0;
+            virtual ArcadeEvent getEvents() = 0;
             virtual void clear() = 0;
-            //virtual void draw(GameData) = 0;
+            virtual void draw(GameData data) = 0;
             virtual void display() = 0;
 
     };

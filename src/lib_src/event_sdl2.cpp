@@ -1,5 +1,5 @@
-#include "mapkey.hpp"
-#include "core.hpp"
+#include "GenericEvent.hpp"
+#include "Core.hpp"
 #include "Arcade.hpp"
 #include <iostream>
 #include <SDL2/SDL.h>

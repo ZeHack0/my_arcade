@@ -6,53 +6,48 @@
 */
 
 #include "Arcade.hpp"
+#include "IDisplayModule.hpp"
+#include "IGameModule.hpp"
+#include "DLLoader.hpp"
+#include "GameData.hpp"
+#include "GenericEvent.hpp"
+#include "Core.hpp"
 #include <iostream>
-#include <vector>
-#include <dlfcn.h>
+#include <memory>
+#include <stdexcept>
 
-namespace arcade
-{
-    int main(int ac, char **av) {
-        (void)ac;
-        void *handle = dlopen(av[1], RTLD_LAZY);
-        if (!handle) {
-            std::cerr << "Error: " << dlerror() << std::endl;
-            return 84;
+namespace arcade {
+
+    Core::Core(const std::string &libpath) {
+        _guiLoader = std::make_unique<DLLoader>(libpath);
+
+        auto getType = _guiLoader->getSymbol<LibType()>("getType");
+        if (!getType || getType() != LibType::GRAPHICAL) {
+            throw std::runtime_error(
+                "Error: '" + libpath + "' not a graphical library"
+            );
         }
+        _gui.reset(_guiLoader->getInstance<IDisplayModule>());
 
-        auto getType = (LibType (*)())(dlsym(handle, "getType"));
-        if (!getType) {
-            std::cerr << "Error: " << dlerror() << std::endl;
-            dlclose(handle);
-            return 84;
-        }
-
-        if (getType() == LibType::GAME) {
-            std::cerr << "Error: The provided library is a game, but a graphical library is required." << std::endl;
-            dlclose(handle);
-            return 84;
-        }
-
-        auto entryPoint = (void (*)())(dlsym(handle, "entryPoint"));
-        if (!entryPoint) {
-            std::cerr << "Error: " << dlerror() << std::endl;
-            dlclose(handle);
-            return 84;
-        }
-
-        entryPoint();
-        dlclose(handle);
-
-        return 0;
+        _gameLoader = std::make_unique<DLLoader>("./lib/arcade_test.so");
+        _game.reset(_gameLoader->getInstance<IGameModule>());
     }
 }
 
 int main(int ac, char **av) {
 
     if (ac != 2) {
-        std::cerr << "Usage: " << av[0] << " <library_path>" << std::endl;
+        std::cerr << "Usage: " << av[0] << " <graphical_library.so>" << std::endl;
         return 84;
     }
 
-    return arcade::main(ac, av);
+    try {
+        arcade::Core core(av[1]);
+        core.run();
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return 84;
+    }
+
+    return 0;
 }

@@ -6,83 +6,107 @@
 */
 
 #include "Arcade.hpp"
-#include <iostream>
+#include "IDisplayModule.hpp"
+#include "GameData.hpp"
+#include "GenericEvent.hpp"
 #include <ncurses.h>
+#include <map>
 
-namespace arcade
-{
-    extern "C" {
+namespace arcade {
 
-        __attribute__((constructor)) void load_lib() {
-            std::cout << "[libtest]: Loading test library..." << std::endl;
+    static const std::map<int, Key> NCURSES_KEY_MAP = {
+        {KEY_UP,    Key::ArrowUp},
+        {KEY_DOWN,  Key::ArrowDown},
+        {KEY_LEFT,  Key::ArrowLeft},
+        {KEY_RIGHT, Key::ArrowRight},
+        {'q',       Key::Q},
+        {'r',       Key::R},
+        {27,        Key::Escape},   // ESC
+        {' ',       Key::Space},
+        {'\n',      Key::Enter},
+    };
+
+
+    class NcursesModule : public IDisplayModule {
+    public:
+
+        NcursesModule() {
+            initscr();
+            cbreak();
+            noecho();
+            keypad(stdscr, TRUE);
+            nodelay(stdscr, TRUE);
+            curs_set(0);
+
+            if (has_colors()) {
+                start_color();
+                init_pair(1, COLOR_YELLOW, COLOR_BLACK);
+                init_pair(2, COLOR_BLACK, COLOR_BLACK);
+            }
         }
 
-        __attribute__((destructor)) void unload_lib() {
-            std::cout << "[libtest]: closing test library..." << std::endl;
+        ~NcursesModule() {
+            endwin();
+        }
+
+        ArcadeEvent getEvents() override {
+            ArcadeEvent ev{};
+            ev.key = Key::Undefined;
+            ev.x = 0;
+            ev.y = 0;
+
+            int ch = getch();
+            if (ch == ERR)
+                return ev;
+
+            auto it = NCURSES_KEY_MAP.find(ch);
+            if (it != NCURSES_KEY_MAP.end())
+                ev.key = it->second;
+
+            return ev;
+        }
+
+        void clear() override {
+            erase();
+        }
+
+        void draw(GameData data) override {
+            int maxY, maxX;
+            getmaxyx(stdscr, maxY, maxX);
+
+            for (auto& [pos, cube] : data.bitmap) {
+                int col = static_cast<int>(pos.first);
+                int row = static_cast<int>(pos.second);
+
+                if (row >= maxY || col >= maxX)
+                    continue;
+
+                bool lit = cube.getred() || cube.getgreen() || cube.getblue();
+
+                if (lit) {
+                    attron(COLOR_PAIR(1));
+                    mvaddch(row, col, '#');
+                    attroff(COLOR_PAIR(1));
+                }
+            }
+        }
+
+        void display() override {
+            refresh();
+        }
+    };
+
+
+    extern "C" {
+
+        IDisplayModule *instance() {
+            return new NcursesModule();
         }
 
         LibType getType() {
             return LibType::GRAPHICAL;
         }
 
-        WINDOW *create_newwin(int height, int width, int starty, int startx)
-        {	WINDOW *local_win;
-
-            local_win = newwin(height, width, starty, startx);
-            box(local_win, 0 , 0);
-            wrefresh(local_win);
-
-            return local_win;
-        }
-
-        void destroy_win(WINDOW *local_win)
-        {
-            wborder(local_win, ' ', ' ', ' ',' ',' ',' ',' ',' ');
-            wrefresh(local_win);
-            delwin(local_win);
-        }
-
-        void entryPoint() {
-            WINDOW *window;
-            int startx, starty, width, height;
-            int ch;
-
-            initscr();
-            cbreak();
-
-            keypad(stdscr, TRUE);
-
-            height = 3;
-            width = 10;
-            starty = (LINES - height) / 2;
-            startx = (COLS - width) / 2;
-
-            printw("Press \"ESC\" to exit");
-            refresh();
-            window = create_newwin(height, width, starty, startx);
-
-            while((ch = getch()) != KEY_F(1)) {
-                switch(ch) {
-                    case KEY_LEFT:
-                        destroy_win(window);
-                        window = create_newwin(height, width, starty,--startx);
-                        break;
-                case KEY_RIGHT:
-                    destroy_win(window);
-                    window = create_newwin(height, width, starty,++startx);
-                    break;
-                case KEY_UP:
-                    destroy_win(window);
-                    window = create_newwin(height, width, --starty,startx);
-                    break;
-                case KEY_DOWN:
-                    destroy_win(window);
-                    window = create_newwin(height, width, ++starty,startx);
-                    break;
-                }
-            }
-            endwin();
-        }
-
     }
+
 }
