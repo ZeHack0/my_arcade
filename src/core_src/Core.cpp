@@ -11,18 +11,18 @@ namespace arcade
 {
     void Core::run() {
         while (true) {
-            ArcadeEvent event = _gui->getEvents();
+            ArcadeEvent event = _guiClass->getEvents();
 
             if (event.key == Key::Escape)
                 break;
 
-            _game->update(event);
+            _gameClass->update(event);
 
-            GameData data = _game->getGameData();
+            GameData data = _gameClass->getGameData();
 
-            _gui->clear();
-            _gui->draw(data);
-            _gui->display();
+            _guiClass->clear();
+            _guiClass->draw(data);
+            _guiClass->display();
         }
     }
 

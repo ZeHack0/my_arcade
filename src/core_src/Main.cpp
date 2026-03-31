@@ -27,10 +27,10 @@ namespace arcade {
                 "Error: '" + libpath + "' not a graphical library"
             );
         }
-        _gui.reset(_guiLoader->getInstance<IDisplayModule>());
+        _guiClass.reset(_guiLoader->getInstance<IDisplayModule>());
 
         _gameLoader = std::make_unique<DLLoader>("./lib/arcade_test.so");
-        _game.reset(_gameLoader->getInstance<IGameModule>());
+        _gameClass.reset(_gameLoader->getInstance<IGameModule>());
     }
 }
 

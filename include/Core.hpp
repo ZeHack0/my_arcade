@@ -43,8 +43,8 @@ namespace arcade {
         private:
             std::unique_ptr<DLLoader>       _guiLoader;
             std::unique_ptr<DLLoader>       _gameLoader;
-            std::unique_ptr<IDisplayModule> _gui;
-            std::unique_ptr<IGameModule>    _game;
+            std::unique_ptr<IDisplayModule> _guiClass;
+            std::unique_ptr<IGameModule>    _gameClass;
             //ArcadeEvent                     _events;
             GameData                        _gameData;
 
