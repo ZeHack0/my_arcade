@@ -30,7 +30,7 @@ namespace arcade {
 
             template <typename T>
             T *getInstance() {
-                auto *(*creator)() = (T *(*)())dlsym(_handle, "instance");
+                auto *(*creator)() = (T *(*)())dlsym(_handle, "getInstance");
 
                 if (!creator)
                     throw std::runtime_error(dlerror());

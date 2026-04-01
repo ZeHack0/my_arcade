@@ -20,17 +20,18 @@ namespace arcade {
 
     Core::Core(const std::string &libpath) {
         _guiLoader = std::make_unique<DLLoader>(libpath);
-
         auto getType = _guiLoader->getSymbol<LibType()>("getType");
         if (!getType || getType() != LibType::GRAPHICAL) {
             throw std::runtime_error(
                 "Error: '" + libpath + "' not a graphical library"
             );
         }
-        _guiClass.reset(_guiLoader->getInstance<IDisplayModule>());
-
+        _events = {Undefined, 0, 0};
+        _guiClass = std::unique_ptr<IDisplayModule>(_guiLoader->getInstance<IDisplayModule>());
+        _gameData.bitmap = init_bit_map(100, 100);
         _gameLoader = std::make_unique<DLLoader>("./lib/arcade_test.so");
-        _gameClass.reset(_gameLoader->getInstance<IGameModule>());
+        _gameClass = std::unique_ptr<IGameModule>(_gameLoader->getInstance<IGameModule>());
+        std::cout << "caca\n";
     }
 }
 

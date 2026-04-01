@@ -59,7 +59,7 @@ namespace arcade {
 
     extern "C" {
 
-        IGameModule *instance() {
+        IGameModule *getInstance() {
             return new PixelGame();
         }
 

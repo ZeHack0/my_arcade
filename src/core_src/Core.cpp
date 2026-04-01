@@ -9,15 +9,6 @@
 
 namespace arcade
 {
-    Core::Core(const std::string &libpath)
-    {
-        DLLoader guiLoader = DLLoader(libpath);
-        _events = {Undefined, 0, 0};
-
-        _guiClass = std::unique_ptr<IDisplayModule>(guiLoader.getInstance<IDisplayModule>());
-
-        _gameData.bitmap = init_bit_map(100, 100);
-    }
 
     void Core::run() {
         while (true) {
