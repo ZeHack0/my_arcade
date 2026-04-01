@@ -6,7 +6,7 @@
 */
 
 #include "bitmap.hpp"
-#include "core.hpp"
+#include "Core.hpp"
 #include "Arcade.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>

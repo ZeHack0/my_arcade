@@ -5,6 +5,7 @@
 ** IGameModule
 */
 
+#pragma once
 #include "GameData.hpp"
 #include "GenericEvent.hpp"
 

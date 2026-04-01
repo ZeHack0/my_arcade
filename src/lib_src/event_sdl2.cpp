@@ -1,5 +1,5 @@
 #include "GenericEvent.hpp"
-#include "core.hpp"
+#include "Core.hpp"
 #include "Arcade.hpp"
 #include <iostream>
 #include <SDL2/SDL.h>

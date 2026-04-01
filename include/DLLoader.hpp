@@ -8,11 +8,14 @@
 #pragma once
 #include <dlfcn.h>
 #include <string>
+#include <functional>
 #include <stdexcept>
 
 namespace arcade {
 
     class DLLoader {
+        private:
+            void *_handle;
 
         public:
             DLLoader(const std::string& path) {
@@ -34,8 +37,13 @@ namespace arcade {
                 return creator();
             }
 
-        private:
-            void *_handle;
+            template <typename Sig>
+            std::function<Sig> getSymbol(const std::string &name){
+                auto *sym = dlsym(_handle, name.c_str());
+                if (!sym)
+                    return nullptr;
+                return reinterpret_cast<Sig*>(sym);
+            }
 
     };
 

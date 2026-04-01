@@ -10,6 +10,7 @@
 #include "IDisplayModule.hpp"
 #include "IGameModule.hpp"
 #include "GenericEvent.hpp"
+#include "DLLoader.hpp"
 #include <map>
 #include <memory>
 
@@ -40,10 +41,13 @@ namespace arcade {
             void run();
 
         private:
-            std::unique_ptr<IDisplayModule>_guiClass;
-            std::unique_ptr<IGameModule>_gameClass;
-            ArcadeEvent _events;
-            GameData _gameData;
+            std::unique_ptr<DLLoader>       _guiLoader;
+            std::unique_ptr<DLLoader>       _gameLoader;
+            std::unique_ptr<IDisplayModule> _guiClass;
+            std::unique_ptr<IGameModule>    _gameClass;
+            ArcadeEvent                     _events;
+            GameData                        _gameData;
+
     };
 
 }

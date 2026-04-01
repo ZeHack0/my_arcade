@@ -5,10 +5,7 @@
 ** Core
 */
 
-#include "core.hpp"
-#include "DLLoader.hpp"
-#include "bitmap.hpp"
-
+#include "Core.hpp"
 
 namespace arcade
 {
@@ -24,22 +21,17 @@ namespace arcade
 
     void Core::run() {
         while (true) {
-            // 1. getEvents
             ArcadeEvent event = _guiClass->getEvents();
 
-            // 2. update
+            if (event.key == Key::Escape)
+                break;
+
             _gameClass->update(event);
 
-            // 3. getGameData
-            _gameData = _gameClass->getGameData();
+            GameData data = _gameClass->getGameData();
 
-            // 4. clear
             _guiClass->clear();
-
-            // 5. draw
-            _guiClass->draw(_gameData);
-
-            // 6. display
+            _guiClass->draw(data);
             _guiClass->display();
         }
     }

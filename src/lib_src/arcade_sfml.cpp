@@ -6,12 +6,13 @@
 */
 
 #include "Arcade.hpp"
-#include "core.hpp"
 #include "IDisplayModule.hpp"
 #include "GameData.hpp"
+#include "GenericEvent.hpp"
+#include "bitmap.hpp"
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include <map>
+#include <iostream>
 
 static const std::map<sf::Keyboard::Key, arcade::Key> keyMap = {
     {sf::Keyboard::A, arcade::Key::A},
@@ -117,8 +118,8 @@ static const std::map<sf::Keyboard::Key, arcade::Key> keyMap = {
     {sf::Keyboard::F12, arcade::Key::F12}
 };
 
-namespace arcade
-{
+namespace arcade {
+
     ArcadeEvent SFMLEvent(sf::Event event)
 {
         arcade::ArcadeEvent ev;
@@ -142,27 +143,47 @@ namespace arcade
         return ev;
     }
 
-    class SfmlModule : public IDisplayModule
-    {
-
+    class SfmlModule : public IDisplayModule {
         public:
-            SfmlModule(): _window(sf::VideoMode(800, 600), "Arcade") {}
+            SfmlModule() : _window(sf::VideoMode(800, 600), "Arcade - SFML") {
+                _window.setFramerateLimit(60);
+            }
 
             ArcadeEvent getEvents() override {
-                ArcadeEvent arcEvent{};
-                arcEvent.key = Undefined;
+                ArcadeEvent ev{};
+                ev.key = Key::Undefined;
 
-                while (_window.pollEvent(_event)) {
-                    if (_event.type == sf::Event::Closed)
-                        _window.close();
+                sf::Event event;
+                while (_window.pollEvent(event)) {
+                    ev = SFMLEvent(event);
                 }
-                return arcEvent;
+                return ev;
             }
-            void clear() override { _window.clear(); }
+
+            void clear() override {
+                _window.clear(sf::Color::Black);
+            }
+
             void draw(GameData data) override {
-                display_bitmap(_window, data.bitmap);
+                const float CELL = 20.0f;
+                sf::RectangleShape cell(sf::Vector2f(CELL - 1, CELL - 1));
+
+                for (auto &[pos, cube] : data.bitmap) {
+                    if (!cube.getred() && !cube.getgreen() && !cube.getblue())
+                        continue;
+                    cell.setPosition(pos.first * CELL, pos.second * CELL);
+                    cell.setFillColor(sf::Color(
+                        cube.getred(),
+                        cube.getgreen(),
+                        cube.getblue()
+                    ));
+                    _window.draw(cell);
+                }
             }
-            void display() override { _window.display(); }
+
+            void display() override {
+                _window.display();
+            }
 
         private:
             sf::RenderWindow _window;
@@ -188,4 +209,5 @@ namespace arcade
             return LibType::GRAPHICAL;
         }
     }
+
 }
