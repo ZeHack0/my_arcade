@@ -10,7 +10,7 @@
 
 arcade::AGlobal::AGlobal()
 {
-    bitmap = init_bit_map(100, 100);
+    bitmap = init_bit_map(640, 480);
     _x = 100;
     _y = 100;
 }

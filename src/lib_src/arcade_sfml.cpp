@@ -105,20 +105,31 @@ static const std::map<sf::Keyboard::Key, arcade::Key> keyMap = {
     {sf::Keyboard::Down, arcade::Key::ArrowDown},
 
     {sf::Keyboard::F1, arcade::Key::F1},
-    {sf::Keyboard::F2, arcade::Key::F1},
-    {sf::Keyboard::F3, arcade::Key::F1},
-    {sf::Keyboard::F4, arcade::Key::F1},
-    {sf::Keyboard::F5, arcade::Key::F1},
-    {sf::Keyboard::F6, arcade::Key::F1},
-    {sf::Keyboard::F7, arcade::Key::F1},
-    {sf::Keyboard::F8, arcade::Key::F1},
-    {sf::Keyboard::F9, arcade::Key::F1},
+    {sf::Keyboard::F2, arcade::Key::F2},
+    {sf::Keyboard::F3, arcade::Key::F3},
+    {sf::Keyboard::F4, arcade::Key::F4},
+    {sf::Keyboard::F5, arcade::Key::F5},
+    {sf::Keyboard::F6, arcade::Key::F6},
+    {sf::Keyboard::F7, arcade::Key::F7},
+    {sf::Keyboard::F8, arcade::Key::F8},
+    {sf::Keyboard::F9, arcade::Key::F9},
     {sf::Keyboard::F10, arcade::Key::F10},
     {sf::Keyboard::F11, arcade::Key::F11},
     {sf::Keyboard::F12, arcade::Key::F12}
 };
 
 namespace arcade {
+
+    void display_bitmap(sf::RenderWindow &wind, std::map<std::pair<std::size_t, std::size_t>, ACube> &bitmap)
+    {
+        sf::RectangleShape pixel(sf::Vector2f(1, 1));
+
+        for (auto &[key, val] : bitmap) {
+            pixel.setPosition(static_cast<float>(key.first), static_cast<float>(key.second));
+            pixel.setFillColor(sf::Color(val.getred(), val.getgreen(), val.getred()));
+            wind.draw(pixel);
+        }
+    }
 
     ArcadeEvent SFMLEvent(sf::Event event)
 {
@@ -129,32 +140,33 @@ namespace arcade {
             auto it = keyMap.find(event.key.code);
             if (it != keyMap.end())
                 ev.key = it->second;
-        }
-        if (event.type == sf::Event::MouseButtonPressed) {
+            }
+            if (event.type == sf::Event::MouseButtonPressed) {
             if (event.mouseButton.button == sf::Mouse::Right)
                 ev.key = arcade::Key::RightClick;
             if (event.mouseButton.button == sf::Mouse::Left)
                 ev.key = arcade::Key::LeftClick;
             if (event.mouseButton.button == sf::Mouse::Middle)
                 ev.key = arcade::Key::MiddleClick;
-        }
-        ev.x = sf::Mouse::getPosition().x;
-        ev.y = sf::Mouse::getPosition().y;
+            }
+            ev.x = sf::Mouse::getPosition().x;
+            ev.y = sf::Mouse::getPosition().y;
         return ev;
     }
 
     class SfmlModule : public IDisplayModule {
         public:
-            SfmlModule() : _window(sf::VideoMode(800, 600), "Arcade - SFML") {
+            SfmlModule() : _window(sf::VideoMode(640, 480), "Arcade - SFML") {
                 _window.setFramerateLimit(60);
             }
-
             ArcadeEvent getEvents() override {
                 ArcadeEvent ev{};
                 ev.key = Key::Undefined;
 
                 sf::Event event;
                 while (_window.pollEvent(event)) {
+                    if (event.type == sf::Event::Closed)
+                        _window.close();
                     ev = SFMLEvent(event);
                 }
                 return ev;
@@ -165,8 +177,8 @@ namespace arcade {
             }
 
             void draw(GameData data) override {
-                const float CELL = 20.0f;
-                sf::RectangleShape cell(sf::Vector2f(CELL - 1, CELL - 1));
+                const float CELL = 16.0f;
+                sf::RectangleShape cell( sf::Vector2f(CELL, CELL));
 
                 for (auto &[pos, cube] : data.bitmap) {
                     if (!cube.getred() && !cube.getgreen() && !cube.getblue())

@@ -19,7 +19,7 @@ namespace arcade
             for (int j = 0; j <= column; j++) {
                 p.first = j;
                 p.second = i;
-                m.insert({arcade::ACube(0, 0, 0), p});
+                m.insert({arcade::ACube(255, 0, 0), p});
             }
         }
         return m;

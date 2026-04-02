@@ -212,7 +212,7 @@ namespace arcade {
     };
 
     extern "C" {
-        IDisplayModule *instance() { return new Sdl2Module(); }
+        IDisplayModule *getInstance() { return new Sdl2Module(); }
         LibType getType()          { return LibType::GRAPHICAL; }
     }
 

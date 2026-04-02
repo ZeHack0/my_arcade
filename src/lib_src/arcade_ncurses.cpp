@@ -99,7 +99,7 @@ namespace arcade {
 
     extern "C" {
 
-        IDisplayModule *instance() {
+        IDisplayModule *getInstance() {
             return new NcursesModule();
         }
 

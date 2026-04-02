@@ -11,12 +11,9 @@ namespace arcade
 {
 
     void Core::run() {
-        while (true) {
-            ArcadeEvent event = _guiClass->getEvents();
-
-            if (event.key == Key::Escape)
-                break;
-
+        ArcadeEvent event;
+        while (event.key != Key::Escape) {
+            event = _guiClass->getEvents();
             _gameClass->update(event);
 
             GameData data = _gameClass->getGameData();

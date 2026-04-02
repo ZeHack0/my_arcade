@@ -28,10 +28,9 @@ namespace arcade {
         }
         _events = {Undefined, 0, 0};
         _guiClass = std::unique_ptr<IDisplayModule>(_guiLoader->getInstance<IDisplayModule>());
-        _gameData.bitmap = init_bit_map(100, 100);
+        _gameData.bitmap = init_bit_map(40, 30);
         _gameLoader = std::make_unique<DLLoader>("./lib/arcade_test.so");
         _gameClass = std::unique_ptr<IGameModule>(_gameLoader->getInstance<IGameModule>());
-        std::cout << "caca\n";
     }
 }
 
