@@ -8,7 +8,7 @@
 #include "Arcade.hpp"
 #include "IGameModule.hpp"
 #include "GameData.hpp"
-#include  "GenericEvent.hpp"
+#include  "ArcadeEvents.hpp"
 #include <iostream>
 
 namespace arcade {
@@ -29,14 +29,14 @@ namespace arcade {
                 paintPlayer(255, 255, 0);
             }
 
-            void update(ArcadeEvent ev) override {
+            void update(ArcadeEvents ev) override {
                     paintPlayer(0, 0, 0);
-
-                    if (ev.key == Key::ArrowUp    && _py > 0)           _py--;
-                    if (ev.key == Key::ArrowDown  && _py < _height - 1) _py++;
-                    if (ev.key == Key::ArrowLeft  && _px > 0)           _px--;
-                    if (ev.key == Key::ArrowRight && _px < _width  - 1) _px++;
-
+                    for (Key n : ev.key) {
+                        if (n == Key::ArrowUp    && _py > 0)           _py--;
+                        if (n == Key::ArrowDown  && _py < _height - 1) _py++;
+                        if (n == Key::ArrowLeft  && _px > 0)           _px--;
+                        if (n == Key::ArrowRight && _px < _width  - 1) _px++;
+                    }
                     paintPlayer(255, 255, 0);
                 }
 
