@@ -8,11 +8,11 @@
 #include "Arcade.hpp"
 #include "IDisplayModule.hpp"
 #include "GameData.hpp"
-#include "GenericEvent.hpp"
+#include "ArcadeEvents.hpp"
 #include <SDL2/SDL.h>
 #include <map>
 
-#include "GenericEvent.hpp"
+#include "ArcadeEvents.hpp"
 #include "Core.hpp"
 #include "Arcade.hpp"
 #include <iostream>
@@ -57,16 +57,6 @@ static const std::map<SDL_Keycode, arcade::Key> keyMap = {
     {SDLK_7, arcade::Key::Num7},
     {SDLK_8, arcade::Key::Num8},
     {SDLK_9, arcade::Key::Num9},
-    {SDLK_KP_0, arcade::Key::Numpad0},
-    {SDLK_KP_1, arcade::Key::Numpad1},
-    {SDLK_KP_2, arcade::Key::Numpad2},
-    {SDLK_KP_3, arcade::Key::Numpad3},
-    {SDLK_KP_4, arcade::Key::Numpad4},
-    {SDLK_KP_5, arcade::Key::Numpad5},
-    {SDLK_KP_6, arcade::Key::Numpad6},
-    {SDLK_KP_7, arcade::Key::Numpad7},
-    {SDLK_KP_8, arcade::Key::Numpad8},
-    {SDLK_KP_9, arcade::Key::Numpad9},
 
     {SDLK_KP_PLUS, arcade::Key::NumpadAdd},
     {SDLK_KP_MINUS, arcade::Key::NumpadSubtract},
@@ -77,11 +67,9 @@ static const std::map<SDL_Keycode, arcade::Key> keyMap = {
     {SDLK_LCTRL, arcade::Key::LeftCtrl},
     {SDLK_LSHIFT, arcade::Key::LeftShift},
     {SDLK_LALT, arcade::Key::LeftAlt},
-    {SDLK_LGUI, arcade::Key::LeftSuper},
     {SDLK_RCTRL, arcade::Key::RightCtrl},
     {SDLK_RSHIFT, arcade::Key::RightShift},
     {SDLK_RALT, arcade::Key::RightAlt},
-    {SDLK_RGUI, arcade::Key::RightSuper},
 
     {SDLK_LEFTBRACKET, arcade::Key::LeftBracket},
     {SDLK_RIGHTBRACKET, arcade::Key::RightBracket},
@@ -102,52 +90,40 @@ static const std::map<SDL_Keycode, arcade::Key> keyMap = {
 
     {SDLK_PAGEUP, arcade::Key::PageUp},
     {SDLK_PAGEDOWN, arcade::Key::PageDown},
-    {SDLK_END, arcade::Key::End},
-    {SDLK_HOME, arcade::Key::Home},
-    {SDLK_INSERT, arcade::Key::Insert},
 
     {SDLK_LEFT, arcade::Key::ArrowLeft},
     {SDLK_RIGHT, arcade::Key::ArrowRight},
     {SDLK_UP, arcade::Key::ArrowUp},
     {SDLK_DOWN, arcade::Key::ArrowDown},
 
-    {SDLK_F1, arcade::Key::F1},
-    {SDLK_F2, arcade::Key::F2},
-    {SDLK_F3, arcade::Key::F3},
-    {SDLK_F4, arcade::Key::F4},
-    {SDLK_F5, arcade::Key::F5},
-    {SDLK_F6, arcade::Key::F6},
-    {SDLK_F7, arcade::Key::F7},
-    {SDLK_F8, arcade::Key::F8},
-    {SDLK_F9, arcade::Key::F9},
-    {SDLK_F10, arcade::Key::F10},
-    {SDLK_F11, arcade::Key::F11},
-    {SDLK_F12, arcade::Key::F12}
 };
 
 
 
 
 namespace arcade {
-    arcade::ArcadeEvent SDLEvent(SDL_Event e)
+    arcade::ArcadeEvents SDLEvent()
 {
-    arcade::ArcadeEvent ev;
+    arcade::ArcadeEvents ev;
     int x = 0;
     int y = 0;
+    SDL_Event event;
 
-    ev.key = arcade::Key::Undefined;
-    if (e.type == SDL_KEYDOWN) {
-        auto it = keyMap.find(e.key.keysym.sym);
-        if (it != keyMap.end())
-            ev.key = it->second;
-    }
-    if (e.type == SDL_MOUSEBUTTONDOWN) {
-        if (SDL_BUTTON_LEFT == e.button.button)
-            ev.key = arcade::Key::LeftClick;
-        if (SDL_BUTTON_RIGHT == e.button.button)
-            ev.key = arcade::Key::RightClick;
-        if (SDL_BUTTON_MIDDLE == e.button.button)
-            ev.key = arcade::Key::MiddleClick;
+    while (SDL_PollEvent(&event)) {
+        ev.key.push_back(arcade::Key::Undefined);
+        if (event.type == SDL_KEYDOWN) {
+            auto it = keyMap.find(event.key.keysym.sym);
+            if (it != keyMap.end())
+                ev.key.push_back(it->second);
+        }
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+            if (SDL_BUTTON_LEFT == event.button.button)
+                ev.key.push_back(arcade::Key::LeftClick);
+            if (SDL_BUTTON_RIGHT == event.button.button)
+                ev.key.push_back(arcade::Key::RightClick);
+            if (SDL_BUTTON_MIDDLE == event.button.button)
+                ev.key.push_back(arcade::Key::MiddleClick);
+        }
     }
     SDL_GetMouseState(&x, &y);
     ev.x = x;
@@ -169,14 +145,11 @@ namespace arcade {
                 SDL_Quit();
             }
 
-            ArcadeEvent getEvents() override {
-                ArcadeEvent ev{};
-                ev.key = Key::Undefined;
+            ArcadeEvents getEvents() override {
+                ArcadeEvents ev{};
+                ev.key.push_back(Key::Undefined);
 
-                SDL_Event event;
-                while (SDL_PollEvent(&event)) {
-                    ev = SDLEvent(event);
-                }
+                ev = SDLEvent();
                 return ev;
             }
 

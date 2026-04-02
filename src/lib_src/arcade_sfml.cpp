@@ -8,7 +8,7 @@
 #include "Arcade.hpp"
 #include "IDisplayModule.hpp"
 #include "GameData.hpp"
-#include "GenericEvent.hpp"
+#include "ArcadeEvents.hpp"
 #include "bitmap.hpp"
 #include <SFML/Graphics.hpp>
 #include <map>
@@ -52,16 +52,6 @@ static const std::map<sf::Keyboard::Key, arcade::Key> keyMap = {
     {sf::Keyboard::Num7, arcade::Key::Num7},
     {sf::Keyboard::Num8, arcade::Key::Num8},
     {sf::Keyboard::Num9, arcade::Key::Num9},
-    {sf::Keyboard::Numpad0, arcade::Key::Numpad0},
-    {sf::Keyboard::Numpad1, arcade::Key::Numpad1},
-    {sf::Keyboard::Numpad2, arcade::Key::Numpad2},
-    {sf::Keyboard::Numpad3, arcade::Key::Numpad3},
-    {sf::Keyboard::Numpad4, arcade::Key::Numpad4},
-    {sf::Keyboard::Numpad5, arcade::Key::Numpad5},
-    {sf::Keyboard::Numpad6, arcade::Key::Numpad6},
-    {sf::Keyboard::Numpad7, arcade::Key::Numpad7},
-    {sf::Keyboard::Numpad8, arcade::Key::Numpad8},
-    {sf::Keyboard::Numpad9, arcade::Key::Numpad9},
 
     {sf::Keyboard::Add,      arcade::Key::NumpadAdd},
     {sf::Keyboard::Subtract, arcade::Key::NumpadSubtract},
@@ -72,11 +62,9 @@ static const std::map<sf::Keyboard::Key, arcade::Key> keyMap = {
     {sf::Keyboard::LControl, arcade::Key::LeftCtrl},
     {sf::Keyboard::LShift,   arcade::Key::LeftShift},
     {sf::Keyboard::LAlt,     arcade::Key::LeftAlt},
-    {sf::Keyboard::LSystem,  arcade::Key::LeftSuper},
     {sf::Keyboard::RControl, arcade::Key::RightCtrl},
     {sf::Keyboard::RShift,   arcade::Key::RightShift},
     {sf::Keyboard::RAlt,     arcade::Key::RightAlt},
-    {sf::Keyboard::RSystem,  arcade::Key::RightSuper},
     {sf::Keyboard::LBracket, arcade::Key::LeftBracket},
     {sf::Keyboard::RBracket, arcade::Key::RightBracket},
     {sf::Keyboard::SemiColon, arcade::Key::Semicolon},
@@ -95,27 +83,12 @@ static const std::map<sf::Keyboard::Key, arcade::Key> keyMap = {
     {sf::Keyboard::Tab, arcade::Key::Tab},
     {sf::Keyboard::PageUp, arcade::Key::PageUp},
     {sf::Keyboard::PageDown, arcade::Key::PageDown},
-    {sf::Keyboard::End, arcade::Key::End},
-    {sf::Keyboard::Home, arcade::Key::Home},
-    {sf::Keyboard::Insert, arcade::Key::Insert},
 
     {sf::Keyboard::Left, arcade::Key::ArrowLeft},
     {sf::Keyboard::Right, arcade::Key::ArrowRight},
     {sf::Keyboard::Up, arcade::Key::ArrowUp},
     {sf::Keyboard::Down, arcade::Key::ArrowDown},
 
-    {sf::Keyboard::F1, arcade::Key::F1},
-    {sf::Keyboard::F2, arcade::Key::F2},
-    {sf::Keyboard::F3, arcade::Key::F3},
-    {sf::Keyboard::F4, arcade::Key::F4},
-    {sf::Keyboard::F5, arcade::Key::F5},
-    {sf::Keyboard::F6, arcade::Key::F6},
-    {sf::Keyboard::F7, arcade::Key::F7},
-    {sf::Keyboard::F8, arcade::Key::F8},
-    {sf::Keyboard::F9, arcade::Key::F9},
-    {sf::Keyboard::F10, arcade::Key::F10},
-    {sf::Keyboard::F11, arcade::Key::F11},
-    {sf::Keyboard::F12, arcade::Key::F12}
 };
 
 namespace arcade {
@@ -131,24 +104,27 @@ namespace arcade {
         }
     }
 
-    ArcadeEvent SFMLEvent(sf::Event event)
+    ArcadeEvents SFMLEvent(sf::RenderWindow &window)
 {
-        arcade::ArcadeEvent ev;
+        arcade::ArcadeEvents ev;
+        sf::Event event;
 
-        ev.key = arcade::Key::Undefined;
-        if (event.type == sf::Event::KeyPressed) {
-            auto it = keyMap.find(event.key.code);
-            if (it != keyMap.end())
-                ev.key = it->second;
+        while (window.pollEvent(event)) {
+            ev.key.push_back(arcade::Key::Undefined);
+            if (event.type == sf::Event::KeyPressed) {
+                auto it = keyMap.find(event.key.code);
+                if (it != keyMap.end())
+                    ev.key.push_back(it->second);
             }
             if (event.type == sf::Event::MouseButtonPressed) {
             if (event.mouseButton.button == sf::Mouse::Right)
-                ev.key = arcade::Key::RightClick;
+                ev.key.push_back(arcade::Key::RightClick);
             if (event.mouseButton.button == sf::Mouse::Left)
-                ev.key = arcade::Key::LeftClick;
+                ev.key.push_back(arcade::Key::LeftClick);
             if (event.mouseButton.button == sf::Mouse::Middle)
-                ev.key = arcade::Key::MiddleClick;
-            }
+                ev.key.push_back(arcade::Key::MiddleClick);
+        }
+        }
             ev.x = sf::Mouse::getPosition().x;
             ev.y = sf::Mouse::getPosition().y;
         return ev;
@@ -159,16 +135,10 @@ namespace arcade {
             SfmlModule() : _window(sf::VideoMode(640, 480), "Arcade - SFML") {
                 _window.setFramerateLimit(60);
             }
-            ArcadeEvent getEvents() override {
-                ArcadeEvent ev{};
-                ev.key = Key::Undefined;
 
-                sf::Event event;
-                while (_window.pollEvent(event)) {
-                    if (event.type == sf::Event::Closed)
-                        _window.close();
-                    ev = SFMLEvent(event);
-                }
+            ArcadeEvents getEvents() override {
+                ArcadeEvents ev{};
+                    ev = SFMLEvent(_window);
                 return ev;
             }
 

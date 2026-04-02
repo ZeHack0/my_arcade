@@ -10,15 +10,17 @@
 #include "IGameModule.hpp"
 #include "DLLoader.hpp"
 #include "GameData.hpp"
-#include "GenericEvent.hpp"
+#include "ArcadeEvents.hpp"
 #include "Core.hpp"
 #include <iostream>
+#include <cstring>
 #include <memory>
 #include <stdexcept>
 
 namespace arcade {
 
     Core::Core(const std::string &libpath) {
+        _lib_path = libpath;
         _guiLoader = std::make_unique<DLLoader>(libpath);
         auto getType = _guiLoader->getSymbol<LibType()>("getType");
         if (!getType || getType() != LibType::GRAPHICAL) {
@@ -26,9 +28,12 @@ namespace arcade {
                 "Error: '" + libpath + "' not a graphical library"
             );
         }
-        _events = {Undefined, 0, 0};
+        _events.key.push_back(Undefined);
+        _events.x = 0;
+        _events.y = 0;
         _guiClass = std::unique_ptr<IDisplayModule>(_guiLoader->getInstance<IDisplayModule>());
         _gameData.bitmap = init_bit_map(40, 30);
+        _game_path = "./lib/arcade_test.so";
         _gameLoader = std::make_unique<DLLoader>("./lib/arcade_test.so");
         _gameClass = std::unique_ptr<IGameModule>(_gameLoader->getInstance<IGameModule>());
     }

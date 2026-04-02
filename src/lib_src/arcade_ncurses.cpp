@@ -8,7 +8,7 @@
 #include "Arcade.hpp"
 #include "IDisplayModule.hpp"
 #include "GameData.hpp"
-#include "GenericEvent.hpp"
+#include "ArcadeEvents.hpp"
 #include <ncurses.h>
 #include <map>
 
@@ -49,9 +49,9 @@ namespace arcade {
             endwin();
         }
 
-        ArcadeEvent getEvents() override {
-            ArcadeEvent ev{};
-            ev.key = Key::Undefined;
+        ArcadeEvents getEvents() override {
+            ArcadeEvents ev{};
+            ev.key.push_back(Key::Undefined);
             ev.x = 0;
             ev.y = 0;
 
@@ -61,7 +61,7 @@ namespace arcade {
 
             auto it = NCURSES_KEY_MAP.find(ch);
             if (it != NCURSES_KEY_MAP.end())
-                ev.key = it->second;
+                ev.key.push_back(it->second);
 
             return ev;
         }

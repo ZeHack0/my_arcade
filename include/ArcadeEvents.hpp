@@ -6,6 +6,7 @@
 */
 
 #pragma once
+#include <vector>
 
 namespace arcade {
 
@@ -16,22 +17,16 @@ namespace arcade {
         Num0, Num1, Num2, Num3, Num4,
         Num5, Num6, Num7, Num8, Num9,
 
-        Numpad0, Numpad1, Numpad2, Numpad3, Numpad4,
-        Numpad5, Numpad6, Numpad7, Numpad8, Numpad9,
         NumpadAdd, NumpadSubtract, NumpadMultiply, NumpadDivide,
         NumpadDecimal, NumpadEnter, NumLock,
-        F1,  F2,  F3,  F4,  F5,  F6,
-        F7,  F8,  F9,  F10, F11, F12,
         LeftShift, RightShift,
         LeftClick, RightClick, MiddleClick,
         LeftCtrl,  RightCtrl,
         LeftAlt,   RightAlt,
-        LeftSuper, RightSuper,   // Touche Windows / Cmd
         CapsLock,
         AltGr,
         ArrowUp, ArrowDown, ArrowLeft, ArrowRight,
-        Home, End, PageUp, PageDown,
-        Insert, Delete,
+        PageUp, PageDown,
 
         Enter, Backspace, Tab, Space, Escape,
 
@@ -49,8 +44,8 @@ namespace arcade {
         Undefined
     };
 
-    struct ArcadeEvent {
-        Key key;
+    struct ArcadeEvents {
+        std::vector <Key> key;
         int x;
         int y;
     };
