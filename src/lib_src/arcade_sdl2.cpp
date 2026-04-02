@@ -159,7 +159,7 @@ namespace arcade {
         public:
             Sdl2Module() {
                 SDL_Init(SDL_INIT_VIDEO);
-                SDL_CreateWindowAndRenderer(800, 600, 0, &_window, &_renderer);
+                SDL_CreateWindowAndRenderer(640, 480, 0, &_window, &_renderer);
                 SDL_SetWindowTitle(_window, "Arcade - SDL2");
             }
 
@@ -186,7 +186,7 @@ namespace arcade {
             }
 
             void draw(GameData data) override {
-                const int CELL = 20;
+                const int CELL = 16;
 
                 for (auto &[pos, cube] : data.bitmap) {
                     if (!cube.getred() && !cube.getgreen() && !cube.getblue())
