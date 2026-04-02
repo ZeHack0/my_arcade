@@ -41,6 +41,11 @@ int main(int ac, char **av) {
         return 84;
     }
 
+    if (std::strcmp(av[1], "--help") == 0) {
+        std::cerr << "help" << std::endl;
+        return 0;
+    }
+
     try {
         arcade::Core core(av[1]);
         core.run();
