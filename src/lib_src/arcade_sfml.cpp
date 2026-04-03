@@ -135,7 +135,9 @@ namespace arcade {
             SfmlModule() : _window(sf::VideoMode(640, 480), "Arcade - SFML") {
                 _window.setFramerateLimit(60);
             }
-
+            ~SfmlModule() {
+                _window.close();
+            }
             ArcadeEvents getEvents() override {
                 ArcadeEvents ev{};
                     ev = SFMLEvent(_window);

@@ -6,24 +6,25 @@
 */
 
 #include "Core.hpp"
-
+#include <ncurses.h>
 namespace arcade
 {
 
     void Core::run() {
         ArcadeEvents event;
+        initscr();
         while (true) {
             event = _guiClass->getEvents();
             for (Key n : event.key) {
                 if (n == Key::Escape)
-                    break;
+                    return;
             }
-            check_event(event);
             _gameClass->update(event);
             GameData data = _gameClass->getGameData();
             _guiClass->clear();
             _guiClass->draw(data);
             _guiClass->display();
+            check_event(event);
         }
     }
 

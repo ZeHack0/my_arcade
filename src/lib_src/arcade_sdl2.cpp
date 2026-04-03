@@ -185,6 +185,13 @@ namespace arcade {
     };
 
     extern "C" {
+        __attribute__((constructor)) void load_lib() {
+            std::cout << "[arcade_sdl2]: Loading SDL2 library..." << std::endl;
+        }
+
+        __attribute__((destructor)) void unload_lib() {
+            std::cout << "[arcade_sdl2]: closing SDL2 library..." << std::endl;
+        }
         IDisplayModule *getInstance() { return new Sdl2Module(); }
         LibType getType()          { return LibType::GRAPHICAL; }
     }

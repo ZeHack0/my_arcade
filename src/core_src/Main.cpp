@@ -33,8 +33,8 @@ namespace arcade {
         _events.y = 0;
         _guiClass = std::unique_ptr<IDisplayModule>(_guiLoader->getInstance<IDisplayModule>());
         _gameData.bitmap = init_bit_map(40, 30);
-        _game_path = "./lib/arcade_test.so";
-        _gameLoader = std::make_unique<DLLoader>("./lib/arcade_test.so");
+        _game_path = "./lib/arcade_menu.so";
+        _gameLoader = std::make_unique<DLLoader>("./lib/arcade_menu.so");
         _gameClass = std::unique_ptr<IGameModule>(_gameLoader->getInstance<IGameModule>());
     }
 }

@@ -42,6 +42,8 @@ namespace arcade {
             void change_game(const std::string &);
             void change_lib(const std::string &);
             void check_event(ArcadeEvents);
+            void back_to_menu();
+            void restart_game();
         private:
             std::unique_ptr<DLLoader>       _guiLoader;
             std::unique_ptr<DLLoader>       _gameLoader;
