@@ -27,10 +27,11 @@ namespace arcade {
                 "Error: '" + libpath + "' not a graphical library"
             );
         }
-        _gui.reset(_guiLoader->getInstance<IDisplayModule>());
-
-        _gameLoader = std::make_unique<DLLoader>("./lib/arcade_test.so");
-        _game.reset(_gameLoader->getInstance<IGameModule>());
+        _events = {Undefined, 0, 0};
+        _guiClass = std::unique_ptr<IDisplayModule>(_guiLoader->getInstance<IDisplayModule>());
+        _gameData.bitmap = init_bit_map(40, 30);
+        _gameLoader = std::make_unique<DLLoader>("./lib/arcade_centipede.so");
+        _gameClass = std::unique_ptr<IGameModule>(_gameLoader->getInstance<IGameModule>());
     }
 }
 
@@ -39,6 +40,11 @@ int main(int ac, char **av) {
     if (ac != 2) {
         std::cerr << "Usage: " << av[0] << " <graphical_library.so>" << std::endl;
         return 84;
+    }
+
+    if (std::strcmp(av[1], "--help") == 0) {
+        std::cerr << "help" << std::endl;
+        return 0;
     }
 
     try {
