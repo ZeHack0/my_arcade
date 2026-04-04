@@ -134,6 +134,8 @@ namespace arcade {
             int maxY, maxX;
             getmaxyx(stdscr, maxY, maxX);
 
+            mvprintw(0, 0, "bullets: %lu", data.bitmap.size());
+
             for (auto& [pos, cube] : data.bitmap) {
                 int col = static_cast<int>(pos.first);
                 int row = static_cast<int>(pos.second);
@@ -153,6 +155,7 @@ namespace arcade {
 
         void display() override {
             refresh();
+            napms(16);
         }
     };
 
