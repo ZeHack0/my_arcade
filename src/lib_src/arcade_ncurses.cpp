@@ -8,30 +8,90 @@
 #include "Arcade.hpp"
 #include "IDisplayModule.hpp"
 #include "GameData.hpp"
-#include "GenericEvent.hpp"
+#include <iostream>
+#include "ArcadeEvents.hpp"
 #include <ncurses.h>
 #include <map>
 
 namespace arcade {
 
-    static const std::map<int, Key> NCURSES_KEY_MAP = {
-        {KEY_UP,    Key::ArrowUp},
-        {KEY_DOWN,  Key::ArrowDown},
-        {KEY_LEFT,  Key::ArrowLeft},
-        {KEY_RIGHT, Key::ArrowRight},
-        {'q',       Key::Q},
-        {'r',       Key::R},
-        {27,        Key::Escape},   // ESC
-        {' ',       Key::Space},
-        {'\n',      Key::Enter},
-    };
+    static const std::map<int, arcade::Key> keyMap = {
+    {'a', arcade::Key::A},
+    {'b', arcade::Key::B},
+    {'c', arcade::Key::C},
+    {'d', arcade::Key::D},
+    {'e', arcade::Key::E},
+    {'f', arcade::Key::F},
+    {'g', arcade::Key::G},
+    {'h', arcade::Key::H},
+    {'i', arcade::Key::I},
+    {'j', arcade::Key::J},
+    {'k', arcade::Key::K},
+    {'l', arcade::Key::L},
+    {'m', arcade::Key::M},
+    {'n', arcade::Key::N},
+    {'o', arcade::Key::O},
+    {'p', arcade::Key::P},
+    {'q', arcade::Key::Q},
+    {'r', arcade::Key::R},
+    {'s', arcade::Key::S},
+    {'t', arcade::Key::T},
+    {'u', arcade::Key::U},
+    {'v', arcade::Key::V},
+    {'w', arcade::Key::W},
+    {'x', arcade::Key::X},
+    {'y', arcade::Key::Y},
+    {'z', arcade::Key::Z},
+    {'0', arcade::Key::Num0},
+    {'1', arcade::Key::Num1},
+    {'2', arcade::Key::Num2},
+    {'3', arcade::Key::Num3},
+    {'4', arcade::Key::Num4},
+    {'5', arcade::Key::Num5},
+    {'6', arcade::Key::Num6},
+    {'7', arcade::Key::Num7},
+    {'8', arcade::Key::Num8},
+    {'9', arcade::Key::Num9},
+    {'+',        arcade::Key::NumpadAdd},
+    {'-',        arcade::Key::NumpadSubtract},
+    {'*',        arcade::Key::NumpadMultiply},
+    {'/',        arcade::Key::NumpadDivide},
+    {27,         arcade::Key::Escape},
+    {'\x01',     arcade::Key::LeftCtrl},
+    {KEY_SLEFT,  arcade::Key::LeftShift},
+    {'\x1b',     arcade::Key::LeftAlt},
+    {'\x01',     arcade::Key::RightCtrl},
+    {KEY_SRIGHT, arcade::Key::RightShift},
+    {'\x1b',     arcade::Key::RightAlt},
+    {'[',        arcade::Key::LeftBracket},
+    {']',        arcade::Key::RightBracket},
+    {';',        arcade::Key::Semicolon},
+    {',',        arcade::Key::Comma},
+    {'.',        arcade::Key::Period},
+    {'\'',       arcade::Key::Apostrophe},
+    {'/',        arcade::Key::Slash},
+    {'\\',       arcade::Key::Backslash},
+    {'`',        arcade::Key::Grave},
+    {'=',        arcade::Key::Equal},
+    {'-',        arcade::Key::Minus},
+    {' ',        arcade::Key::Space},
+    {'\n',       arcade::Key::Enter},
+    {'\r',       arcade::Key::Enter},
+    {KEY_BACKSPACE, arcade::Key::Backspace},
+    {'\t',       arcade::Key::Tab},
+    {KEY_PPAGE,  arcade::Key::PageUp},
+    {KEY_NPAGE,  arcade::Key::PageDown},
+    {KEY_LEFT,   arcade::Key::ArrowLeft},
+    {KEY_RIGHT,  arcade::Key::ArrowRight},
+    {KEY_UP,     arcade::Key::ArrowUp},
+    {KEY_DOWN,   arcade::Key::ArrowDown},
+};
 
 
     class NcursesModule : public IDisplayModule {
     public:
 
         NcursesModule() {
-            initscr();
             cbreak();
             noecho();
             keypad(stdscr, TRUE);
@@ -49,9 +109,9 @@ namespace arcade {
             endwin();
         }
 
-        ArcadeEvent getEvents() override {
-            ArcadeEvent ev{};
-            ev.key = Key::Undefined;
+        ArcadeEvents getEvents() override {
+            ArcadeEvents ev{};
+            ev.key.push_back(Key::Undefined);
             ev.x = 0;
             ev.y = 0;
 
@@ -59,9 +119,9 @@ namespace arcade {
             if (ch == ERR)
                 return ev;
 
-            auto it = NCURSES_KEY_MAP.find(ch);
-            if (it != NCURSES_KEY_MAP.end())
-                ev.key = it->second;
+            auto it = keyMap.find(ch);
+            if (it != keyMap.end())
+                ev.key.push_back(it->second);
 
             return ev;
         }
@@ -102,7 +162,15 @@ namespace arcade {
 
     extern "C" {
 
-        IDisplayModule *instance() {
+        __attribute__((constructor)) void load_lib() {
+            std::cout << "[arcade_ncurses]: Loading ncurses library..." << std::endl;
+        }
+
+        __attribute__((destructor)) void unload_lib() {
+            std::cout << "[arcade_ncurses]: closing ncurses library..." << std::endl;
+        }
+
+        IDisplayModule *getInstance() {
             return new NcursesModule();
         }
 

@@ -9,7 +9,7 @@
 #include "bitmap.hpp"
 #include "IDisplayModule.hpp"
 #include "IGameModule.hpp"
-#include "GenericEvent.hpp"
+#include "ArcadeEvents.hpp"
 #include "DLLoader.hpp"
 #include <map>
 #include <memory>
@@ -39,13 +39,19 @@ namespace arcade {
         public:
             Core(const std::string &libpath);
             void run();
-
+            void change_game(const std::string &);
+            void change_lib(const std::string &);
+            void check_event(ArcadeEvents);
+            void back_to_menu();
+            void restart_game();
         private:
             std::unique_ptr<DLLoader>       _guiLoader;
             std::unique_ptr<DLLoader>       _gameLoader;
-            std::unique_ptr<IDisplayModule> _gui;
-            std::unique_ptr<IGameModule>    _game;
-            //ArcadeEvent                     _events;
+            std::unique_ptr<IDisplayModule> _guiClass;
+            std::unique_ptr<IGameModule>    _gameClass;
+            std::string _lib_path;
+            std::string _game_path;
+            ArcadeEvents                     _events;
             GameData                        _gameData;
 
     };

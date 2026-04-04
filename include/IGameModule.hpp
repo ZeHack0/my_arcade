@@ -7,7 +7,7 @@
 
 #pragma once
 #include "GameData.hpp"
-#include "GenericEvent.hpp"
+#include "ArcadeEvents.hpp"
 
 namespace arcade {
 
@@ -16,7 +16,7 @@ namespace arcade {
         public:
             virtual ~IGameModule() = default;
 
-            virtual void update(ArcadeEvent) = 0;
+            virtual void update(ArcadeEvents) = 0;
             virtual GameData getGameData() = 0;
     };
 

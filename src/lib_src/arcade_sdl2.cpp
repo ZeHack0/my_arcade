@@ -8,7 +8,7 @@
 #include "Arcade.hpp"
 #include "IDisplayModule.hpp"
 #include "GameData.hpp"
-#include "GenericEvent.hpp"
+#include "ArcadeEvents.hpp"
 #include <SDL2/SDL.h>
 #include <map>
 

@@ -9,10 +9,13 @@
 #include <dlfcn.h>
 #include <string>
 #include <functional>
+#include <stdexcept>
 
 namespace arcade {
 
     class DLLoader {
+        private:
+            void *_handle;
 
         public:
             DLLoader(const std::string& path) {
@@ -27,7 +30,7 @@ namespace arcade {
 
             template <typename T>
             T *getInstance() {
-                auto *(*creator)() = (T *(*)())dlsym(_handle, "instance");
+                auto *(*creator)() = (T *(*)())dlsym(_handle, "getInstance");
 
                 if (!creator)
                     throw std::runtime_error(dlerror());
@@ -41,9 +44,6 @@ namespace arcade {
                     return nullptr;
                 return reinterpret_cast<Sig*>(sym);
             }
-
-        private:
-            void *_handle;
 
     };
 

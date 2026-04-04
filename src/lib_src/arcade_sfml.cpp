@@ -8,7 +8,7 @@
 #include "Arcade.hpp"
 #include "IDisplayModule.hpp"
 #include "GameData.hpp"
-#include "GenericEvent.hpp"
+#include "ArcadeEvents.hpp"
 #include "bitmap.hpp"
 #include <SFML/Graphics.hpp>
 #include <map>
