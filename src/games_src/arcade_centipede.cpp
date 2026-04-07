@@ -9,8 +9,8 @@
 #include "IDisplayModule.hpp"
 #include "DLLoader.hpp"
 #include "GameData.hpp"
-#include "GenericEvent.hpp"
 #include "Core.hpp"
+#include <algorithm>
 #include <iostream>
 
 namespace arcade {
@@ -31,19 +31,23 @@ namespace arcade {
                 paintPlayer(144, 213, 255);
             }
 
-            void update(ArcadeEvent ev) override {
+            void update(ArcadeEvents ev) override {
                 paintPlayer(0, 0, 0);
                 paintBullet(0, 0, 0);
 
-                if (ev.key == ArrowUp    && _py > 0)
+                auto isPressed = [&ev](Key k) {
+                    return std::find(ev.key.begin(), ev.key.end(), k) != ev.key.end();
+                };
+
+                if (isPressed(ArrowUp) && _py > 0)
                     _py--;
-                if (ev.key == ArrowDown  && _py < _height - 1)
+                if (isPressed(ArrowDown) && _py < _height - 1)
                     _py++;
-                if (ev.key == ArrowLeft  && _px > 0)
+                if (isPressed(ArrowLeft) && _px > 0)
                     _px--;
-                if (ev.key == ArrowRight && _px < _width  - 1)
+                if (isPressed(ArrowRight) && _px < _width  - 1)
                     _px++;
-                if (ev.key == Space) {
+                if (isPressed(arcade::Key::Space)) {
                     _bullet.push_back({_px, _py});
                 }
 

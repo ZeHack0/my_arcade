@@ -8,7 +8,6 @@
 #include "Arcade.hpp"
 #include "IGameModule.hpp"
 #include "GameData.hpp"
-#include  "GenericEvent.hpp"
 #include <iostream>
 #include <vector>
 
@@ -28,9 +27,9 @@ namespace arcade {
             };
 
             std::vector<std::pair<std::size_t, std::size_t>> _body;
-            std::size_t snake_size;
-            std::size_t fruit_x;
-            std::size_t fruit_y;
+            //std::size_t snake_size;
+            //std::size_t fruit_x;
+            //std::size_t fruit_y;
 
             Dir _dir;
             GameData _data;
@@ -60,29 +59,33 @@ namespace arcade {
                 paintCell(_body[2].first, _body[2].second, 255, 165, 0);
             }
 
-            void update(ArcadeEvent ev) override {
+            void update(ArcadeEvents ev) override {
                 for (auto &seg : _body)
                     _data.bitmap[{seg.first, seg.second}] = ACube(0, 0, 0);
 
                 std::size_t _actual_head_x = _body[0].first;
                 std::size_t _actual_head_y = _body[0].second;
 
-                if (ev.key == Key::ArrowUp && _dir != Dir::DOWN)
+                auto isPressed = [&ev](Key k) {
+                    return std::find(ev.key.begin(), ev.key.end(), k) != ev.key.end();
+                };
+
+                if (isPressed(Key::ArrowUp) && _dir != Dir::DOWN)
                     _dir = Dir::UP;
-                if (ev.key == Key::ArrowDown && _dir != Dir::UP)
+                if (isPressed(Key::ArrowDown) && _dir != Dir::UP)
                     _dir = Dir::DOWN;
-                if (ev.key == Key::ArrowLeft && _dir != Dir::RIGHT)
+                if (isPressed(Key::ArrowLeft) && _dir != Dir::RIGHT)
                     _dir = Dir::LEFT;
-                if (ev.key == Key::ArrowRight && _dir != Dir::LEFT)
+                if (isPressed(Key::ArrowRight) && _dir != Dir::LEFT)
                     _dir = Dir::RIGHT;
 
-                if (ev.key == Dir::UP && _actual_head_y > 0)
+                if (_dir == Dir::UP && _actual_head_y > 0)
                     _actual_head_y--;
-                if (ev.key == Dir::DOWN && _actual_head_y < _height - 1)
+                if (_dir == Dir::DOWN && _actual_head_y < _height - 1)
                     _actual_head_y++;
-                if (ev.key == Dir::LEFT && _actual_head_x > 0)
+                if (_dir == Dir::LEFT && _actual_head_x > 0)
                     _actual_head_x--;
-                if (ev.key == Dir::RIGHT && _actual_head_x < _width - 1)
+                if (_dir == Dir::RIGHT && _actual_head_x < _width - 1)
                     _actual_head_x++;
 
                 for (int i = _body.size() - 1; i > 0; i--)
