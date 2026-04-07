@@ -8,6 +8,7 @@
 #include "Arcade.hpp"
 #include "IGameModule.hpp"
 #include "GameData.hpp"
+
 #include "ArcadeEvents.hpp"
 #include <iostream>
 #include <vector>
@@ -69,6 +70,7 @@ namespace arcade {
                 paintCell(_body[2].first, _body[2].second, 255, 165, 0);
                 spawn_Fruit();
             }
+
 
             int get_HighScore() {
                 std::ifstream file("highscore_snake.txt");
