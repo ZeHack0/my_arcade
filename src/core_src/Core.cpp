@@ -12,7 +12,6 @@ namespace arcade
 
     void Core::run() {
         ArcadeEvents event;
-        initscr();
         while (true) {
             event = _guiClass->getEvents();
             for (Key n : event.key) {

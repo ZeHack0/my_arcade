@@ -5,6 +5,8 @@
 ** arcade_ncurses
 */
 
+#include <filesystem>
+
 #include "Arcade.hpp"
 #include "IDisplayModule.hpp"
 #include "GameData.hpp"
@@ -92,6 +94,7 @@ namespace arcade {
     public:
 
         NcursesModule() {
+            initscr();
             cbreak();
             noecho();
             keypad(stdscr, TRUE);
@@ -105,7 +108,8 @@ namespace arcade {
             }
         }
 
-        ~NcursesModule() {
+        ~NcursesModule() override
+        {
             endwin();
         }
 
@@ -134,7 +138,7 @@ namespace arcade {
             int maxY, maxX;
             getmaxyx(stdscr, maxY, maxX);
 
-            mvprintw(0, 0, "bullets: %lu", data.bitmap.size());
+            //mvprintw(0, 0, "bullets: %lu", data.bitmap.size());
 
             for (auto& [pos, cube] : data.bitmap) {
                 int col = static_cast<int>(pos.first);
@@ -155,7 +159,7 @@ namespace arcade {
 
         void display() override {
             refresh();
-            napms(16);
+            napms(RENDER);
         }
     };
 

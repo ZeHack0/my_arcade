@@ -32,10 +32,14 @@ namespace arcade {
             void update(ArcadeEvents ev) override {
                     paintPlayer(0, 0, 0);
                     for (Key n : ev.key) {
-                        if (n == Key::ArrowUp    && _py > 0)           _py--;
-                        if (n == Key::ArrowDown  && _py < _height - 1) _py++;
-                        if (n == Key::ArrowLeft  && _px > 0)           _px--;
-                        if (n == Key::ArrowRight && _px < _width  - 1) _px++;
+                        if (n == Key::ArrowUp    && _py > 0)
+                            _py--;
+                        if (n == Key::ArrowDown  && _py < _height - 1)
+                            _py++;
+                        if (n == Key::ArrowLeft  && _px > 0)
+                            _px--;
+                        if (n == Key::ArrowRight && _px < _width  - 1)
+                            _px++;
                     }
                     paintPlayer(255, 255, 0);
                 }
