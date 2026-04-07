@@ -103,34 +103,9 @@ namespace arcade {
         }
     }
 
-    ArcadeEvents SFMLEvent(sf::Event event)
-    {
-        ArcadeEvents ev;
-
-        if (event.type == sf::Event::KeyPressed) {
-            auto it = keyMap.find(event.key.code);
-            if (it != keyMap.end())
-                ev.key.push_back(it->second);
-        }
-
-        if (event.type == sf::Event::MouseButtonPressed) {
-            if (event.mouseButton.button == sf::Mouse::Right)
-                ev.key.push_back(RightClick);
-            if (event.mouseButton.button == sf::Mouse::Left)
-                ev.key.push_back(LeftClick);
-            if (event.mouseButton.button == sf::Mouse::Middle)
-                ev.key.push_back(MiddleClick);
-        }
-
-        ev.x = sf::Mouse::getPosition().x;
-        ev.y = sf::Mouse::getPosition().y;
-
-        return ev;
-    }
-
     class SfmlModule : public IDisplayModule {
         public:
-            SfmlModule() : _window(sf::VideoMode(640, 480), "Arcade - SFML") {
+            SfmlModule() : _window(sf::VideoMode(1920, 1072), "Arcade - SFML") {
                 _window.setFramerateLimit(30);
             }
 
@@ -141,13 +116,24 @@ namespace arcade {
                 while (_window.pollEvent(event)) {
                     if (event.type == sf::Event::Closed)
                         _window.close();
-
-                    ArcadeEvents currentEv = SFMLEvent(event);
-                    if (!currentEv.key.empty())
-                        ev.key.insert(ev.key.end(), currentEv.key.begin(), currentEv.key.end());
-                    ev.x = currentEv.x;
-                    ev.y = currentEv.y;
                 }
+
+                for (auto const& [sfKey, arcKey] : keyMap) {
+                    if (sf::Keyboard::isKeyPressed(sfKey)) {
+                        ev.key.push_back(arcKey);
+                    }
+                }
+
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+                    ev.key.push_back(RightClick);
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                    ev.key.push_back(LeftClick);
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Middle))
+                    ev.key.push_back(MiddleClick);
+
+                ev.x = sf::Mouse::getPosition().x;
+                ev.y = sf::Mouse::getPosition().y;
+
                 return ev;
             }
 
@@ -157,12 +143,15 @@ namespace arcade {
 
             void draw(GameData data) override {
                 const float CELL = 16.0f;
-                sf::RectangleShape cell( sf::Vector2f(CELL, CELL));
+                float offsetX = (_window.getSize().x - (data._x * CELL)) / 2.0f;
+                float offsetY = (_window.getSize().y - (data._y * CELL)) / 2.0f;
+
+                sf::RectangleShape cell(sf::Vector2f(CELL, CELL));
 
                 for (auto &[pos, cube] : data.bitmap) {
                     if (!cube.getred() && !cube.getgreen() && !cube.getblue())
                         continue;
-                    cell.setPosition(pos.first * CELL, pos.second * CELL);
+                    cell.setPosition(offsetX + (pos.first * CELL), offsetY + (pos.second * CELL));
                     cell.setFillColor(sf::Color(
                         cube.getred(),
                         cube.getgreen(),

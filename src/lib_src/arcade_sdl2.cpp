@@ -98,31 +98,6 @@ static const std::map<SDL_Keycode, arcade::Key> keyMap = {
 
 namespace arcade {
 
-    ArcadeEvents SDLEvent(SDL_Event e)
-    {
-        ArcadeEvents ev;
-        int x = 0;
-        int y = 0;
-
-        if (e.type == SDL_KEYDOWN) {
-            auto it = keyMap.find(e.key.keysym.sym);
-            if (it != keyMap.end())
-                ev.key.push_back(it->second);
-        }
-        if (e.type == SDL_MOUSEBUTTONDOWN) {
-            if (SDL_BUTTON_LEFT == e.button.button)
-                ev.key.push_back(LeftClick);
-            if (SDL_BUTTON_RIGHT == e.button.button)
-                ev.key.push_back(RightClick);
-            if (SDL_BUTTON_MIDDLE == e.button.button)
-                ev.key.push_back(MiddleClick);
-        }
-        SDL_GetMouseState(&x, &y);
-        ev.x = x;
-        ev.y = y;
-        return ev;
-    }
-
     class Sdl2Module : public IDisplayModule {
 
         public:
@@ -143,12 +118,33 @@ namespace arcade {
                 ArcadeEvents totalEv;
 
                 while (SDL_PollEvent(&event)) {
-                    ArcadeEvents ev = SDLEvent(event);
-                    if (!ev.key.empty())
-                        totalEv.key.insert(totalEv.key.end(), ev.key.begin(), ev.key.end());
-                    totalEv.x = ev.x;
-                    totalEv.y = ev.y;
+                    if (event.type == SDL_QUIT) {
+                        // handle quit if necessary, or just rely on core doing it
+                    }
                 }
+
+                const Uint8* state = SDL_GetKeyboardState(NULL);
+
+                for (auto const& [sdlKey, arcKey] : keyMap) {
+                    SDL_Scancode scancode = SDL_GetScancodeFromKey(sdlKey);
+                    if (state[scancode]) {
+                        totalEv.key.push_back(arcKey);
+                    }
+                }
+
+                int x, y;
+                Uint32 mouseState = SDL_GetMouseState(&x, &y);
+
+                if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT))
+                    totalEv.key.push_back(LeftClick);
+                if (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT))
+                    totalEv.key.push_back(RightClick);
+                if (mouseState & SDL_BUTTON(SDL_BUTTON_MIDDLE))
+                    totalEv.key.push_back(MiddleClick);
+
+                totalEv.x = x;
+                totalEv.y = y;
+
                 return totalEv;
             }
 

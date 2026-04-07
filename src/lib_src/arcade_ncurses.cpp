@@ -115,17 +115,16 @@ namespace arcade {
 
         ArcadeEvents getEvents() override {
             ArcadeEvents ev{};
-            ev.key.push_back(Key::Undefined);
             ev.x = 0;
             ev.y = 0;
 
-            int ch = getch();
-            if (ch == ERR)
-                return ev;
-
-            auto it = keyMap.find(ch);
-            if (it != keyMap.end())
-                ev.key.push_back(it->second);
+            int ch;
+            while ((ch = getch()) != ERR) {
+                auto it = keyMap.find(ch);
+                if (it != keyMap.end()) {
+                    ev.key.push_back(it->second);
+                }
+            }
 
             return ev;
         }
