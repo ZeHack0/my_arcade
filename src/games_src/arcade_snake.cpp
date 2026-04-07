@@ -181,6 +181,17 @@ namespace arcade {
                 for (std::size_t i = 1; i < _body.size(); i++)
                     if (_body[i].first == head_x && _body[i].second == head_y)
                         return true;
+                std::size_t _actual_head_x = _body[0].first;
+                std::size_t _actual_head_y = _body[0].second;
+
+                if (_dir == Dir::UP && _actual_head_y <= 0)
+                    return true;
+                if (_dir == Dir::DOWN && _actual_head_y >= _height - 1)
+                    return true;
+                if (_dir == Dir::LEFT && _actual_head_x <= 0)
+                    return true;
+                if (_dir == Dir::RIGHT && _actual_head_x >= _width - 1)
+                    return true;
                 return false;
             }
 
