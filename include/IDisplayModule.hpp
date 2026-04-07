@@ -9,6 +9,8 @@
 #include "ArcadeEvents.hpp"
 #include "GameData.hpp"
 
+#define RENDER 50
+
 namespace arcade {
 
     class IDisplayModule {

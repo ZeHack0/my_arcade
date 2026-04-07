@@ -131,7 +131,7 @@ namespace arcade {
     class SfmlModule : public IDisplayModule {
         public:
             SfmlModule() : _window(sf::VideoMode(640, 480), "Arcade - SFML") {
-                _window.setFramerateLimit(60);
+                _window.setFramerateLimit(30);
             }
 
             ArcadeEvents getEvents() override {

@@ -32,14 +32,14 @@ namespace arcade {
             };
 
             std::vector<std::pair<std::size_t, std::size_t>> _body;
-            std::size_t snake_size;
+            //std::size_t snake_size;
             std::size_t fruit_x;
             std::size_t fruit_y;
             std::size_t _score = 0;
             std::size_t _max_Score = (_width * _height - 3) * 100;
             std::size_t _highScore = 0;
             bool _win = false;
-            bool _lose = false;
+            //bool _lose = false;
 
             Dir _dir;
             GameData _data;

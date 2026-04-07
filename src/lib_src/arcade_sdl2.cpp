@@ -176,7 +176,7 @@ namespace arcade {
 
             void display() override {
                 SDL_RenderPresent(_renderer);
-                SDL_Delay(16);
+                SDL_Delay(RENDER);
             }
 
         private:
