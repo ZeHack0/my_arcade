@@ -188,11 +188,11 @@ namespace arcade {
 
                 if (_dir == Dir::UP && _actual_head_y <= 0)
                     return true;
-                if (_dir == Dir::DOWN && _actual_head_y == _height - 1)
+                if (_dir == Dir::DOWN && _actual_head_y == _height)
                     return true;
                 if (_dir == Dir::LEFT && _actual_head_x <= 0)
                     return true;
-                if (_dir == Dir::RIGHT && _actual_head_x == _width - 1)
+                if (_dir == Dir::RIGHT && _actual_head_x == _width)
                     return true;
                 return false;
             }
