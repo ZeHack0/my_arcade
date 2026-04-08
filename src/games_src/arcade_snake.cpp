@@ -20,8 +20,8 @@ namespace arcade {
     class PixelGame : public IGameModule {
 
         private:
-            static constexpr std::size_t _width  = 40;
-            static constexpr std::size_t _height = 30;
+            static constexpr std::size_t _width  = 80;
+            static constexpr std::size_t _height = 50;
 
             enum class Dir {
                 UP,
@@ -64,9 +64,11 @@ namespace arcade {
                 _body.push_back({center_x, center_y});
                 _body.push_back({center_x - 1, center_y});
                 _body.push_back({center_x - 2, center_y});
+                _body.push_back({center_x - 3, center_y});
                 paintCell(_body[0].first, _body[0].second, 255, 0, 0);
                 paintCell(_body[1].first, _body[1].second, 255, 165, 0);
                 paintCell(_body[2].first, _body[2].second, 255, 165, 0);
+                paintCell(_body[3].first, _body[3].second, 255, 165, 0);
                 spawn_Fruit();
             }
 
@@ -150,8 +152,8 @@ namespace arcade {
             }
 
             void spawn_Fruit() {
-                fruit_x = std::rand() % _width;
-                fruit_y = std::rand() % _height;
+                fruit_x = std::rand() % (_width - 1);
+                fruit_y = std::rand() % (_height - 1);
                 if (is_Cell_Filled(fruit_x, fruit_y) == false) {
                     paintCell(fruit_x, fruit_y, 0, 255, 0);
                 } else {
@@ -186,13 +188,24 @@ namespace arcade {
 
                 if (_dir == Dir::UP && _actual_head_y <= 0)
                     return true;
-                if (_dir == Dir::DOWN && _actual_head_y >= _height - 1)
+                if (_dir == Dir::DOWN && _actual_head_y == _height - 1)
                     return true;
                 if (_dir == Dir::LEFT && _actual_head_x <= 0)
                     return true;
-                if (_dir == Dir::RIGHT && _actual_head_x >= _width - 1)
+                if (_dir == Dir::RIGHT && _actual_head_x == _width - 1)
                     return true;
                 return false;
+            }
+
+            void draw_boundaries(std::size_t r, std::size_t g, std::size_t b) {
+                for (std::size_t i = 0; i <= _width; i++)
+                    _data.bitmap[{i, 0}] = ACube(r, g, b);
+                for (std::size_t i = 1; i <= _height - 1; i++)
+                    _data.bitmap[{0, i}] = ACube(r, g, b);
+                for (std::size_t i = 0; i <= _width; i++)
+                    _data.bitmap[{i, _height}] = ACube(r, g, b);
+                for (std::size_t i = 1; i <= _height - 1; i++)
+                    _data.bitmap[{_width, i}] = ACube(r, g, b);
             }
 
             void update(ArcadeEvents ev) override {
@@ -203,10 +216,9 @@ namespace arcade {
                 move_Snake();
                 checkFruit();
                 if (check_collision() == true)
-                    throw std::runtime_error(
-                      "Game Over"
-                    );
+                    throw std::runtime_error("Game Over, score : " + std::to_string(_score));
                 draw_Snake();
+                draw_boundaries(123, 123, 123);
             }
 
             GameData getGameData() override {
