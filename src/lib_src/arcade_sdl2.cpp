@@ -229,7 +229,8 @@ namespace arcade {
                     TTF_CloseFont(pfont);
                     SDL_Texture *pTexture = SDL_CreateTextureFromSurface(_renderer, PSurfTxt);
                     SDL_FreeSurface(PSurfTxt);
-                    SDL_RenderCopy(_renderer, pTexture, nullptr, nullptr);
+                    SDL_Rect rect {it.BeginPos.first, it.BeginPos.second, PSurfTxt->w, PSurfTxt->h};
+                    SDL_RenderCopy(_renderer, pTexture, nullptr, &rect);
                 }
             }
 
