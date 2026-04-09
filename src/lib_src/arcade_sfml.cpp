@@ -171,8 +171,7 @@ namespace arcade {
                     text.setString(it.text);
                     text.setCharacterSize(26);
                     text.setFillColor(sf::Color(it.color.R, it.color.G, it.color.B));
-                    text.setRotation(90.f);
-                    text.move(it.BeginPos.first, it.BeginPos.second);
+                    text.setPosition(it.BeginPos.first, it.BeginPos.second);
                     _window.draw(text);
                 }
             }
