@@ -53,6 +53,7 @@ namespace arcade {
             std::string _game_path;
             ArcadeEvents                     _events;
             GameData                        _gameData;
+            std::string                     _username;
 
     };
 

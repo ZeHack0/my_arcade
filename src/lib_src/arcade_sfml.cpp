@@ -114,6 +114,7 @@ namespace arcade {
 
                 sf::Event event;
                 while (_window.pollEvent(event)) {
+                    _event = event;
                     if (event.type == sf::Event::Closed)
                         _window.close();
                 }
@@ -145,8 +146,11 @@ namespace arcade {
                 const float CELL = 16.0f;
                 float offsetX = (_window.getSize().x - (data._x * CELL)) / 2.0f;
                 float offsetY = (_window.getSize().y - (data._y * CELL)) / 2.0f;
+                sf::Font font;
+                sf::Text text;
 
                 sf::RectangleShape cell(sf::Vector2f(CELL, CELL));
+
 
                 for (auto &[pos, cube] : data.bitmap) {
                     if (!cube.getred() && !cube.getgreen() && !cube.getblue())
@@ -159,7 +163,58 @@ namespace arcade {
                     ));
                     _window.draw(cell);
                 }
+
+                for (auto it : data.text) {
+                    if (!font.loadFromFile(it.PathPolicy))
+                        throw(std::runtime_error(it.PathPolicy + ": Policy cant be loaded\n"));
+                    text.setFont(font);
+                    text.setString(it.text);
+                    text.setCharacterSize(26);
+                    text.setFillColor(sf::Color(it.color.R, it.color.G, it.color.B));
+                    text.setRotation(90.f);
+                    text.move(it.BeginPos.first, it.BeginPos.second);
+                    _window.draw(text);
+                }
             }
+
+            std::string getUsername() override {
+                sf::Font font;
+                font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
+                sf::Text prompt("Enter USERNAME: ", font, 24);
+                prompt.setPosition(500, 500);
+                sf::Text input("", font, 24);
+                input.setPosition(500, 540);
+                sf::Color coulor = {255, 0, 0};
+                std::string username;
+
+                while (_window.isOpen()) {
+                    sf::Event event;
+                    while (_window.pollEvent(event)) {
+                        if (event.type == sf::Event::Closed)
+                            return "player1";
+                        if (event.type == sf::Event::TextEntered) {
+                            char c = event.text.unicode;
+                            if (c == '\r' || c == '\n') {
+                                if (username.empty()) {
+                                    username = "player1";
+                                }
+                                return username;
+                            }
+                            else if (c == '\b')
+                                if (!username.empty())
+                                    username.pop_back();
+                            username.push_back(c);
+                            input.setFillColor(coulor);
+                            input.setString(username);
+                        }
+                    }
+                    _window.clear(sf::Color::Black);
+                    _window.draw(prompt);
+                    _window.draw(input);
+                    _window.display();
+                }
+                return username;
+}
 
             void display() override {
                 _window.display();
@@ -167,7 +222,7 @@ namespace arcade {
 
         private:
             sf::RenderWindow _window;
-            //sf::Event _event;
+            sf::Event _event;
 
     };
 

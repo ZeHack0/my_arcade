@@ -9,14 +9,15 @@
 #include "IDisplayModule.hpp"
 #include "GameData.hpp"
 #include "ArcadeEvents.hpp"
-#include <SDL2/SDL.h>
 #include <map>
 
 #include "Core.hpp"
 #include "Arcade.hpp"
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_render.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 static const std::map<SDL_Keycode, arcade::Key> keyMap = {
     {SDLK_a, arcade::Key::A},
@@ -118,6 +119,7 @@ namespace arcade {
                 SDL_Event event;
                 ArcadeEvents totalEv;
 
+
                 while (SDL_PollEvent(&event)) {
                     if (event.type == SDL_QUIT) {
                         // handle quit if necessary, or just rely on core doing it
@@ -154,6 +156,56 @@ namespace arcade {
                 SDL_RenderClear(_renderer);
             }
 
+            std::string getUsername()
+            {
+
+                bool end = false;
+                TTF_Init();
+                std::string username;
+                std::string output;
+                SDL_StartTextInput();
+                int width = 0;
+                int height = 0;
+                SDL_Event ev;
+                TTF_Font *pfont = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 24);
+
+                while (!end) {
+                    while(SDL_PollEvent(&ev)) {
+                        if (ev.type == SDL_QUIT) {
+                            end = true;
+                        }
+                        if (ev.type == SDL_TEXTINPUT || ev.type == SDL_KEYDOWN) {
+                            if (ev.type == SDL_KEYDOWN) {
+                                if (ev.key.keysym.sym == SDLK_BACKSPACE && username.length() > 0)
+                                    username.pop_back();
+                                if (ev.key.keysym.sym == SDLK_RETURN)
+                                    end = true;
+                            }
+                            else if (ev.type == SDL_TEXTINPUT)
+                                username += ev.text.text;
+                        }
+                    }
+                    SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
+                    SDL_RenderClear(_renderer);
+                    SDL_Color couleur = {255, 255, 255, 255};
+                    output = "Enter Username :" + username;
+                    SDL_Surface *PSurfTxt = TTF_RenderText_Blended(pfont, output.c_str(), couleur);
+                    SDL_Texture *pTexture = SDL_CreateTextureFromSurface(_renderer, PSurfTxt);
+                    width = PSurfTxt->w;
+                    height = PSurfTxt->h;
+                    SDL_FreeSurface(PSurfTxt);
+                    SDL_Rect rect{20, 20, width, height};
+                    SDL_RenderCopy(_renderer, pTexture, nullptr, &rect);
+                    SDL_DestroyTexture(pTexture);
+                    SDL_RenderPresent(_renderer);
+                    SDL_Delay(RENDER);
+
+                }
+                    TTF_CloseFont(pfont);
+                    SDL_StopTextInput();
+                    return username;
+            }
+
             void draw(GameData data) override {
                 const int CELL = 16;
 
@@ -168,6 +220,16 @@ namespace arcade {
                         CELL - 1, CELL - 1
                     };
                     SDL_RenderFillRect(_renderer, &rect);
+                }
+                for (auto it : data.text) {
+                    TTF_Init();
+                    TTF_Font *pfont = TTF_OpenFont(it.PathPolicy.c_str(), it.TextSize);
+                    SDL_Color couleur = {(Uint8)it.color.R, (Uint8)it.color.G, (Uint8)it.color.B, 0};
+                    SDL_Surface * PSurfTxt = TTF_RenderText_Blended(pfont, it.text.c_str(), couleur);
+                    TTF_CloseFont(pfont);
+                    SDL_Texture *pTexture = SDL_CreateTextureFromSurface(_renderer, PSurfTxt);
+                    SDL_FreeSurface(PSurfTxt);
+                    SDL_RenderCopy(_renderer, pTexture, nullptr, nullptr);
                 }
             }
 

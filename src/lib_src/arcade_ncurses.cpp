@@ -133,6 +133,11 @@ namespace arcade {
             erase();
         }
 
+        std::string getUsername()
+        {
+            return "player1";
+        }
+
         void draw(GameData data) override {
             int maxY, maxX;
             getmaxyx(stdscr, maxY, maxX);

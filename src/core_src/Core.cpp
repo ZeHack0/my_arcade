@@ -20,6 +20,8 @@ namespace arcade
                     return;
                 }
             }
+            if (_username.empty())
+                _username = _guiClass->getUsername();
             _gameClass->update(event);
             GameData data = _gameClass->getGameData();
             _guiClass->clear();
