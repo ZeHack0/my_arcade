@@ -133,7 +133,7 @@ namespace arcade {
             erase();
         }
 
-        std::string getUsername()
+        std::string getUsername() override
         {
             return "player1";
         }

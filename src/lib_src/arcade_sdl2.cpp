@@ -156,7 +156,7 @@ namespace arcade {
                 SDL_RenderClear(_renderer);
             }
 
-            std::string getUsername()
+            std::string getUsername() override
             {
 
                 bool end = false;
@@ -242,7 +242,7 @@ namespace arcade {
         private:
             SDL_Window   *_window;
             SDL_Renderer *_renderer;
-            bool _isfullscreen;
+            //bool _isfullscreen;
     };
 
     extern "C" {
