@@ -105,6 +105,7 @@ namespace arcade {
                 SDL_Init(SDL_INIT_VIDEO);
                 SDL_CreateWindowAndRenderer(640, 480, 0, &_window, &_renderer);
                 SDL_SetWindowTitle(_window, "Arcade - SDL2");
+                SDL_SetWindowFullscreen(_window, 1);
             }
 
             ~Sdl2Module() {
@@ -176,8 +177,9 @@ namespace arcade {
             }
 
         private:
-            SDL_Window   *_window   = nullptr;
-            SDL_Renderer *_renderer = nullptr;
+            SDL_Window   *_window;
+            SDL_Renderer *_renderer;
+            bool _isfullscreen;
     };
 
     extern "C" {

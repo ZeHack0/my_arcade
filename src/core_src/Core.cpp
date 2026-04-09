@@ -15,8 +15,10 @@ namespace arcade
         while (true) {
             event = _guiClass->getEvents();
             for (Key n : event.key) {
-                if (n == Key::Escape)
+                if (n == Key::Escape) {
+                    endwin();
                     return;
+                }
             }
             _gameClass->update(event);
             GameData data = _gameClass->getGameData();
