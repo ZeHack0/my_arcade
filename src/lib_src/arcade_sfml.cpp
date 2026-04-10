@@ -178,7 +178,7 @@ namespace arcade {
 
             std::string getUsername() override {
                 sf::Font font;
-                font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
+                font.loadFromFile("./DejaVuSans.ttf");
                 sf::Text prompt("Enter USERNAME: ", font, 24);
                 prompt.setPosition(500, 500);
                 sf::Text input("", font, 24);

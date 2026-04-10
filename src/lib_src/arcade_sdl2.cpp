@@ -167,7 +167,7 @@ namespace arcade {
                 int width = 0;
                 int height = 0;
                 SDL_Event ev;
-                TTF_Font *pfont = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 24);
+                TTF_Font *pfont = TTF_OpenFont("./DejaVuSans.ttf", 24);
 
                 while (!end) {
                     while(SDL_PollEvent(&ev)) {
