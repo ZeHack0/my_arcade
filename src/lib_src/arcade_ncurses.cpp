@@ -13,6 +13,7 @@
 #include <iostream>
 #include "ArcadeEvents.hpp"
 #include <ncurses.h>
+#include <curses.h>
 #include <map>
 
 namespace arcade {
@@ -159,6 +160,9 @@ namespace arcade {
                     attroff(COLOR_PAIR(1));
                 }
             }
+
+            for (auto it : data.text)
+                mvprintw(it.BeginPos.second, it.BeginPos.first, "%s", it.text.c_str());
         }
 
         void display() override {
