@@ -92,6 +92,7 @@ static const std::map<sf::Keyboard::Key, arcade::Key> keyMap = {
 
 namespace arcade {
 
+
     void display_bitmap(sf::RenderWindow &wind, std::map<std::pair<std::size_t, std::size_t>, ACube> &bitmap)
     {
         sf::RectangleShape pixel(sf::Vector2f(1, 1));
@@ -119,6 +120,8 @@ namespace arcade {
                         _window.close();
                 }
 
+
+                ev.key.push_back(Key::Undefined);
                 for (auto const& [sfKey, arcKey] : keyMap) {
                     if (sf::Keyboard::isKeyPressed(sfKey)) {
                         ev.key.push_back(arcKey);
@@ -156,11 +159,7 @@ namespace arcade {
                     if (!cube.getred() && !cube.getgreen() && !cube.getblue())
                         continue;
                     cell.setPosition(offsetX + (pos.first * CELL), offsetY + (pos.second * CELL));
-                    cell.setFillColor(sf::Color(
-                        cube.getred(),
-                        cube.getgreen(),
-                        cube.getblue()
-                    ));
+                    cell.setFillColor(sf::Color(cube.getred(), cube.getgreen(), cube.getblue()));
                     _window.draw(cell);
                 }
 

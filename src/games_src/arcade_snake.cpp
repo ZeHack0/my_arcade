@@ -31,6 +31,7 @@ namespace arcade {
                 RIGHT
             };
 
+            bool _keyPressed;
             std::vector<std::pair<std::size_t, std::size_t>> _body;
             //std::size_t snake_size;
             std::size_t fruit_x;
@@ -59,6 +60,7 @@ namespace arcade {
                 _dir = Dir::UP;
                 std::srand(static_cast<unsigned>(std::time(nullptr)));
 
+                _keyPressed = false;
                 _highScore = get_HighScore();
                 std::size_t center_x = _width / 2;
                 std::size_t center_y = _height / 2;
@@ -91,33 +93,40 @@ namespace arcade {
                 bool arrowLeft = false;
                 bool arrowRight = false;
 
-                for (std::size_t i = 0; i < ev.key.size(); i++) {
-                    if (ev.key[i] == Key::ArrowLeft)
-                      arrowLeft = true;
-                    if (ev.key[i] == Key::ArrowRight)
-                        arrowRight = true;
-                }
+                if (!_keyPressed) {
+                    for (std::size_t i = 0; i < ev.key.size(); i++) {
+                        if (ev.key[i] == Key::ArrowLeft) {
+                          arrowLeft = true;
+                          _keyPressed = true;
+                        } else if (ev.key[i] == Key::ArrowRight) {
+                            arrowRight = true;
+                            _keyPressed = true;
+                        }
+                    }
+                } else
+                    _keyPressed = false;
+                if (_keyPressed) {
+                    if (arrowLeft) {
+                            if (_dir == Dir::RIGHT)
+                                _dir = Dir::UP;
+                            else if(_dir == Dir::UP)
+                                _dir = Dir::LEFT;
+                            else if(_dir == Dir::LEFT)
+                                _dir = Dir::DOWN;
+                            else if (_dir == Dir::DOWN)
+                                _dir = Dir::RIGHT;
+                    }
 
-                if (arrowLeft) {
-                    if (_dir == Dir::RIGHT)
-                        _dir = Dir::UP;
-                    else if(_dir == Dir::UP)
-                        _dir = Dir::LEFT;
-                    else if(_dir == Dir::LEFT)
-                        _dir = Dir::DOWN;
-                    else if (_dir == Dir::DOWN)
-                        _dir = Dir::RIGHT;
-                }
-
-                if (arrowRight) {
-                    if (_dir == Dir::RIGHT)
-                        _dir = Dir::DOWN;
-                    else if (_dir == Dir::DOWN)
-                        _dir = Dir::LEFT;
-                    else if (_dir == Dir::LEFT)
-                        _dir = Dir::UP;
-                    else if (_dir == Dir::UP)
-                        _dir = Dir::RIGHT;
+                    else if (arrowRight) {
+                        if (_dir == Dir::RIGHT)
+                            _dir = Dir::DOWN;
+                        else if (_dir == Dir::DOWN)
+                            _dir = Dir::LEFT;
+                        else if (_dir == Dir::LEFT)
+                            _dir = Dir::UP;
+                        else if (_dir == Dir::UP)
+                            _dir = Dir::RIGHT;
+                    }
                 }
             }
 
