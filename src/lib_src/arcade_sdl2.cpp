@@ -199,7 +199,6 @@ namespace arcade {
                     SDL_DestroyTexture(pTexture);
                     SDL_RenderPresent(_renderer);
                     SDL_Delay(RENDER);
-
                 }
                     TTF_CloseFont(pfont);
                     SDL_StopTextInput();

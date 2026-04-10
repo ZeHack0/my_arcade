@@ -28,6 +28,8 @@ namespace arcade
             check_event(event);
             _gameClass->update(event, begin);
             GameData data = _gameClass->getGameData();
+            if (data.GameOver == true)
+                back_to_menu();
             _guiClass->clear();
             _guiClass->draw(data);
             _guiClass->display();
