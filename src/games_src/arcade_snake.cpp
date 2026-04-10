@@ -24,10 +24,10 @@ namespace arcade {
             static constexpr std::size_t _width  = 70;
             static constexpr std::size_t _height = 50;
 
-            enum class Dir {
+            enum Dir {
                 UP,
-                DOWN,
                 LEFT,
+                DOWN,
                 RIGHT
             };
 
@@ -88,30 +88,37 @@ namespace arcade {
             }
 
             void get_Direction(ArcadeEvents ev) {
-                bool arrowUp = false;
-                bool arrowDown = false;
                 bool arrowLeft = false;
                 bool arrowRight = false;
 
                 for (std::size_t i = 0; i < ev.key.size(); i++) {
-                    if (ev.key[i] == Key::ArrowUp)
-                        arrowUp = true;
-                    if (ev.key[i] == Key::ArrowDown)
-                      arrowDown = true;
                     if (ev.key[i] == Key::ArrowLeft)
                       arrowLeft = true;
                     if (ev.key[i] == Key::ArrowRight)
                         arrowRight = true;
                 }
 
-                if (arrowUp && _dir != Dir::DOWN)
-                    _dir = Dir::UP;
-                if (arrowDown && _dir != Dir::UP)
-                    _dir = Dir::DOWN;
-                if (arrowLeft && _dir != Dir::RIGHT)
-                    _dir = Dir::LEFT;
-                if (arrowRight && _dir != Dir::LEFT)
-                    _dir = Dir::RIGHT;
+                if (arrowLeft) {
+                    if (_dir == Dir::RIGHT)
+                        _dir = Dir::UP;
+                    else if(_dir == Dir::UP)
+                        _dir = Dir::LEFT;
+                    else if(_dir == Dir::LEFT)
+                        _dir = Dir::DOWN;
+                    else if (_dir == Dir::DOWN)
+                        _dir = Dir::RIGHT;
+                }
+
+                if (arrowRight) {
+                    if (_dir == Dir::RIGHT)
+                        _dir = Dir::DOWN;
+                    else if (_dir == Dir::DOWN)
+                        _dir = Dir::LEFT;
+                    else if (_dir == Dir::LEFT)
+                        _dir = Dir::UP;
+                    else if (_dir == Dir::UP)
+                        _dir = Dir::RIGHT;
+                }
             }
 
             void move_Snake(){
