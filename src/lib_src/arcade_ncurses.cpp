@@ -136,7 +136,24 @@ namespace arcade {
 
         std::string getUsername() override
         {
-            return "player1";
+            std::string username;
+
+            refresh();
+            int ch;
+            std::string output = "Enter Username: ";
+            bool end = false;
+            mvprintw(20, 20, "%s",  output.c_str());
+            while (!end) {
+                while ((ch = getch()) != ERR) {
+                    username.push_back(ch);
+                    output.push_back(ch);
+                    mvprintw(20, 20, "%s",  output.c_str());
+                    if (ch == '\n' || ch == '\r') {
+                        return username;
+                    }
+                }
+        }
+            return username;
         }
 
         void draw(GameData data) override {
