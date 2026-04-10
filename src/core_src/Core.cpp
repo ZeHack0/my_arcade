@@ -22,12 +22,12 @@ namespace arcade
             }
             if (_username.empty())
                 _username = _guiClass->getUsername();
+            check_event(event);
             _gameClass->update(event);
             GameData data = _gameClass->getGameData();
             _guiClass->clear();
             _guiClass->draw(data);
             _guiClass->display();
-            check_event(event);
         }
     }
 

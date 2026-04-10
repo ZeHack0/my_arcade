@@ -16,12 +16,12 @@
 #include <cstring>
 #include <memory>
 #include <stdexcept>
+#include <unistd.h>
 #include <filesystem>
 
 namespace arcade {
     void Core::change_game(const std::string &path)
     {
-        _game_path = path;
         _gameClass.reset();
         _gameLoader.reset();
         _gameLoader = std::make_unique<DLLoader>(path);
@@ -29,12 +29,11 @@ namespace arcade {
         if (!getType || getType() != LibType::GAME)
             throw std::runtime_error("Error: '" + path + "' not a game");
         _gameClass = std::unique_ptr<IGameModule>(_gameLoader->getInstance<IGameModule>());
+        _game_path = path;
     }
 
     void Core::change_lib(const std::string &path)
     {
-        std::cout << "path = " << path << std::endl;
-        _lib_path = path;
         _guiClass.reset();
         _guiLoader.reset();
         _guiLoader = std::make_unique<DLLoader>(path);
@@ -42,6 +41,7 @@ namespace arcade {
         if (!getType || getType() != LibType::GRAPHICAL)
             throw std::runtime_error("Error: '" + path + "' not a graphical library");
         _guiClass = std::unique_ptr<IDisplayModule>(_guiLoader->getInstance<IDisplayModule>());
+        _lib_path = path;
     }
 
     std::string get_next_game(std::string &current_game_path)
@@ -96,8 +96,10 @@ namespace arcade {
     void Core::check_event(ArcadeEvents event)
     {
         for (Key n : event.key) {
-            if (n == Num2)
+            if (n == Num2) {
+                sleep(1);
                 change_game(get_next_game(_game_path));
+            }
             if (n == Num3)
                 change_lib(get_next_lib(_lib_path));
             if (n == Num1)
