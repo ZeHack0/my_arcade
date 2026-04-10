@@ -9,6 +9,7 @@
 #include "IGameModule.hpp"
 #include "GameData.hpp"
 #include  "ArcadeEvents.hpp"
+#include <time.h>
 #include <iostream>
 
 namespace arcade {
@@ -29,7 +30,8 @@ namespace arcade {
                 paintPlayer(255, 255, 0);
             }
 
-            void update(ArcadeEvents ev) override {
+            void update(ArcadeEvents ev, clock_t clock) override {
+                    (void)clock;
                     paintPlayer(0, 0, 0);
                     for (Key n : ev.key) {
                         if (n == Key::ArrowUp    && _py > 0)
@@ -40,6 +42,15 @@ namespace arcade {
                             _px--;
                         if (n == Key::ArrowRight && _px < _width  - 1)
                             _px++;
+                        if (n == Key::K) {
+                            ArcadeText text;
+                            text.PathPolicy = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf";
+                            text.BeginPos = {20, 20};
+                            text.color = {255, 0, 0};
+                            text.text = "test de text tex mex";
+                            text.TextSize = 24;
+                            _data.text.push_back(text);
+                        }
                     }
                     paintPlayer(255, 255, 0);
                 }
