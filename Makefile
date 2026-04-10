@@ -33,7 +33,10 @@ OBJ_MAIN = $(SRC_MAIN:%.cpp=$(BUILD_DIR)/%.o)
 LIBS_SO  = $(addprefix $(LIB_DIR)/, $(notdir $(SRC_LIBS:%.cpp=%.so)))
 GAMES_SO = $(addprefix $(LIB_DIR)/, $(notdir $(SRC_GAMES:%.cpp=%.so)))
 
-LDFLAGS = -ldl -lncurses -lsfml-graphics -lsfml-window -lsfml-system -lSDL2 -lSDL2_ttf -lSDL2_image $(RPATH) $(MAC_LDFLAGS) -rdynamic
+LDFLAGS = -ldl $(RPATH) $(MAC_LDFLAGS) -rdynamic
+SFMLFALGS = -lsfml-graphics -lsfml-window -lsfml-system
+NCURSESFLAGS = -lncurses
+SDL2FLAGS = -lSDL2 -lSDL2_ttf -lSDL2_image
 
 GRE := \033[0;32m
 GRA := \033[0;37m
