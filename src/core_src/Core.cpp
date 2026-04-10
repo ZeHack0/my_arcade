@@ -7,10 +7,13 @@
 
 #include "Core.hpp"
 #include <ncurses.h>
+#include <time.h>
+
 namespace arcade
 {
 
     void Core::run() {
+        clock_t begin = clock();
         ArcadeEvents event;
         while (true) {
             event = _guiClass->getEvents();
@@ -23,7 +26,7 @@ namespace arcade
             if (_username.empty())
                 _username = _guiClass->getUsername();
             check_event(event);
-            _gameClass->update(event);
+            _gameClass->update(event, begin);
             GameData data = _gameClass->getGameData();
             _guiClass->clear();
             _guiClass->draw(data);

@@ -9,7 +9,7 @@
 #include "DLLoader.hpp"
 #include "GameData.hpp"
 #include "Core.hpp"
-
+#include <time.h>
 #include <algorithm>
 #include <iostream>
 
@@ -56,7 +56,7 @@ namespace arcade {
 
             }
 
-            void update(ArcadeEvents ev) override;
+            void update(ArcadeEvents ev, clock_t) override;
 
             GameData getGameData() override {
                 return _data;
@@ -91,7 +91,8 @@ namespace arcade {
             void moveCentipede();
     };
 
-    void CentipedeGame::update(ArcadeEvents ev) {
+    void CentipedeGame::update(ArcadeEvents ev, clock_t clock) {
+        (void)clock;
         paintPlayer(0, 0, 0);
         paintBullet(0, 0, 0);
         drawMushroom(0, 0, 0);

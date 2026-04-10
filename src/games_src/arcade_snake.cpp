@@ -11,6 +11,7 @@
 #include "ArcadeEvents.hpp"
 #include <iostream>
 #include <vector>
+#include <time.h>
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
@@ -208,7 +209,8 @@ namespace arcade {
                     _data.bitmap[{_width, i}] = ACube(r, g, b);
             }
 
-            void update(ArcadeEvents ev) override {
+            void update(ArcadeEvents ev, clock_t clock) override {
+                (void)clock;
                 if (_win == true)
                     return;
                 clear_Snake();

@@ -8,6 +8,7 @@
 #pragma once
 #include "GameData.hpp"
 #include "ArcadeEvents.hpp"
+#include <time.h>
 
 namespace arcade {
 
@@ -16,7 +17,7 @@ namespace arcade {
         public:
             virtual ~IGameModule() = default;
 
-            virtual void update(ArcadeEvents) = 0;
+            virtual void update(ArcadeEvents, clock_t) = 0;
             virtual GameData getGameData() = 0;
     };
 
