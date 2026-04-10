@@ -21,7 +21,7 @@ namespace arcade {
     class PixelGame : public IGameModule {
 
         private:
-            static constexpr std::size_t _width  = 80;
+            static constexpr std::size_t _width  = 70;
             static constexpr std::size_t _height = 50;
 
             enum class Dir {
@@ -39,7 +39,7 @@ namespace arcade {
             std::size_t _max_Score = (_width * _height - 3) * 100;
             std::size_t _highScore = 0;
             bool _win = false;
-            //bool _lose = false;
+            bool _lose = false;
 
             Dir _dir;
             GameData _data;
@@ -218,7 +218,7 @@ namespace arcade {
                 move_Snake();
                 checkFruit();
                 if (check_collision() == true)
-                    throw std::runtime_error("Game Over, score : " + std::to_string(_score));
+                    _data.GameOver = true;
                 draw_Snake();
                 draw_boundaries(123, 123, 123);
             }

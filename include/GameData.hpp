@@ -29,6 +29,7 @@ namespace arcade {
         std::size_t _y;
         std::map<std::pair<std::size_t, std::size_t>, ACube> bitmap;
         std::vector<ArcadeText> text;
+        bool GameOver;
     };
 
 }
