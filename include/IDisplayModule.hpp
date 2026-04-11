@@ -20,7 +20,7 @@ namespace arcade {
 
             virtual ArcadeEvents getEvents() = 0;
             virtual void clear() = 0;
-            virtual void draw(GameData data) = 0;
+            virtual void draw(GameData) = 0;
             virtual void display() = 0;
             virtual std::string getUsername() = 0;
 

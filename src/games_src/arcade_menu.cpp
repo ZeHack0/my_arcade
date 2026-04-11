@@ -117,7 +117,17 @@ namespace arcade {
 
             void update(ArcadeEvents ev, clock_t clock) override {
                     (void)clock;
-                    (void)ev;
+                    for (Key n : ev.key) {
+                    if (n == Key::K) {
+                            ArcadeText text;
+                            text.PathPolicy = "./assets/DejaVuSans.ttf";
+                            text.BeginPos = {20, 20};
+                            text.color = {255, 0, 0};
+                            text.text = "test de tex";
+                            text.TextSize = 24;
+                            _data.text.push_back(text);
+                        }
+                    }
 
 
                             /*paintPlayer(0, 0, 0);
