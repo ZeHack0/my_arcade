@@ -92,43 +92,36 @@ namespace arcade {
             void get_Direction(ArcadeEvents ev) {
                 bool arrowLeft = false;
                 bool arrowRight = false;
+                bool anyArrowPressed = false;
 
-                if (!_keyPressed) {
-                    for (std::size_t i = 0; i < ev.key.size(); i++) {
-                        if (ev.key[i] == Key::ArrowLeft) {
-                          arrowLeft = true;
-                          _keyPressed = true;
-                        } else if (ev.key[i] == Key::ArrowRight) {
-                            arrowRight = true;
-                            _keyPressed = true;
-                        }
-                    }
-                } else
-                    _keyPressed = false;
-                if (_keyPressed) {
-                    if (arrowLeft) {
-                            if (_dir == Dir::RIGHT)
-                                _dir = Dir::UP;
-                            else if(_dir == Dir::UP)
-                                _dir = Dir::LEFT;
-                            else if(_dir == Dir::LEFT)
-                                _dir = Dir::DOWN;
-                            else if (_dir == Dir::DOWN)
-                                _dir = Dir::RIGHT;
-                    }
-
-                    else if (arrowRight) {
-                        if (_dir == Dir::RIGHT)
-                            _dir = Dir::DOWN;
-                        else if (_dir == Dir::DOWN)
-                            _dir = Dir::LEFT;
-                        else if (_dir == Dir::LEFT)
-                            _dir = Dir::UP;
-                        else if (_dir == Dir::UP)
-                            _dir = Dir::RIGHT;
+                for (std::size_t i = 0; i < ev.key.size(); i++) {
+                    if (ev.key[i] == Key::ArrowLeft) {
+                        anyArrowPressed = true;
+                        if (!_keyPressed) arrowLeft = true;
+                    } else if (ev.key[i] == Key::ArrowRight) {
+                        anyArrowPressed = true;
+                        if (!_keyPressed) arrowRight = true;
                     }
                 }
-            }
+
+                if (!anyArrowPressed)
+                    _keyPressed = false;
+
+                if (arrowLeft || arrowRight)
+                    _keyPressed = true;
+
+                if (arrowLeft) {
+                    if (_dir == Dir::RIGHT)      _dir = Dir::UP;
+                    else if (_dir == Dir::UP)    _dir = Dir::LEFT;
+                    else if (_dir == Dir::LEFT)  _dir = Dir::DOWN;
+                    else if (_dir == Dir::DOWN)  _dir = Dir::RIGHT;
+                } else if (arrowRight) {
+                    if (_dir == Dir::RIGHT)      _dir = Dir::DOWN;
+                    else if (_dir == Dir::DOWN)  _dir = Dir::LEFT;
+                    else if (_dir == Dir::LEFT)  _dir = Dir::UP;
+                    else if (_dir == Dir::UP)    _dir = Dir::RIGHT;
+                }
+}
 
             void move_Snake(){
                 std::size_t _actual_head_x = _body[0].first;
@@ -169,15 +162,14 @@ namespace arcade {
             }
 
             void spawn_Fruit() {
-                fruit_x = std::rand() % (_width - 1);
-                fruit_y = std::rand() % (_height - 1);
+                fruit_x = std::rand() % (_width);
+                fruit_y = std::rand() % (_height );
                 if (is_Cell_Filled(fruit_x, fruit_y) == false) {
                     paintCell(fruit_x, fruit_y, 0, 255, 0);
                 } else {
                     spawn_Fruit();
                 }
             }
-
             void checkFruit() {
                 if (_body[0].first == fruit_x && _body[0].second == fruit_y) {
                     _body.push_back(_body.back());
@@ -236,6 +228,7 @@ namespace arcade {
                 if (check_collision() == true)
                     _data.GameOver = true;
                 draw_Snake();
+                paintCell(fruit_x, fruit_y, 0, 255, 0);
                 draw_boundaries(123, 123, 123);
             }
 
