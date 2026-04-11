@@ -40,7 +40,7 @@ namespace arcade {
             std::size_t _max_Score = (_width * _height - 3) * 100;
             std::size_t _highScore = 0;
             bool _win = false;
-            bool _lose = false;
+            //bool _lose = false;
 
             Dir _dir;
             GameData _data;

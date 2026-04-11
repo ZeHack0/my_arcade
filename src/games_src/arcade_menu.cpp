@@ -5,14 +5,14 @@
 ** arcade_test
 */
 
-#include "Arcade.hpp"
-#include "IGameModule.hpp"
-#include "GameData.hpp"
-#include  "ArcadeEvents.hpp"
+#include "../../include/Arcade.hpp"
+#include "../../include/IGameModule.hpp"
+#include "../../include/GameData.hpp"
+#include  "../../include/ArcadeEvents.hpp"
+#include "../../include/DLLoader.hpp"
 #include <time.h>
 #include <iostream>
 #include <filesystem>
-#include "DLLoader.hpp"
 
 
 namespace arcade {
@@ -104,8 +104,9 @@ namespace arcade {
             }
 
             void update(ArcadeEvents ev, clock_t clock) override {
-                    (void)clock;
-                    (void)ev;
+                (void)clock;
+                (void)ev;
+            }
 
             GameData getGameData() override {
                     return _data;
@@ -115,8 +116,6 @@ namespace arcade {
             GameData    _data;
 
     };
-
-
 
     extern "C" {
 
