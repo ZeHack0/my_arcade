@@ -216,8 +216,6 @@ namespace arcade {
                 auto [x, y] = part.segments[i];
                 if (i == 0)
                     _data.bitmap[{x, y}] = ACube(255, 165, 0);
-                else if (i == part.segments.size() - 1)
-                    _data.bitmap[{x, y}] = ACube(255, 80, 80);
                 else
                     _data.bitmap[{x, y}] = ACube(0, 150, 0);
             }
