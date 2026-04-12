@@ -24,6 +24,7 @@ namespace arcade {
         int TextSize;
         ArcadeColor color;
     };
+
     struct GameData {
         std::size_t _x;
         std::size_t _y;
