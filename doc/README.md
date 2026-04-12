@@ -1,51 +1,134 @@
-ARCADE
+# ARCADE
 
-Welcome to our Arcade Project here's how to use it:
-! DONT FORGET TO CHECK schema_archi_arcade for every technical detail.
+Welcome to our Arcade Project.
 
-To compile, use make, make re/clean/fclean
+This document explains how to build, use, and extend the project.
+For a complete overview of the architecture, refer to `schema_archi_arcade`.
 
-The Core manages two dynamic libraries at a time: one display module and one game module. It drives the main loop, pipes ArcadeEvents into the game, retrieves GameData, and hands it to the display.
+## Build
 
-Adding a Graphic Library
-1. Implement IDisplayModule
-Create a class that publicly inherits from IDisplayModule
+To compile the project, use:
 
-2. Expose the mandatory C entry point
-Your .so must export:
-    - the symbol getInstance wich return a pointer of the class
-    - the symbol getType wich return a LibType
+```bash
+make
+```
 
-3. Implement rendering from GameData
-draw(GameData data) receives:
+Available rules:
 
-data.bitmap — a std::map<std::pair<size_t,size_t>, ACube> representing the game grid.
-data.text — a std::vector<ArcadeText> for HUD / score labels.
-data.GameOver — true when the game has ended.
-
-4. Build a shared library
-Place the resulting .so alongside the other libraries inside the ./lib folder so DLLoader can find it.
-
-Adding a Game
-
-1. Implement IGameModule
-Create a class that publicly inherits from IGameModule.
-
-2. Expose the mandatory C entry point
-Your .so must export:
-    - the symbol getInstance wich return a pointer of the class
-    - the symbol getType wich return a LibType
-
-3. Handle ArcadeEvents
-update() is called every frame with the latest ArcadeEvents. Determine the actions in your game in the case of the given event.
-
-4. Return GameData
-
-Use the getGameData() method to return a gameData structure used to display game.
-
-5. Build a shared library
-Place the resulting .so alongside the other libraries inside the ./lib folder so DLLoader can find it.
+```bash
+make        # build everything
+make re     # rebuild everything
+make clean  # remove object files
+make fclean # remove binaries and object files
+```
 
 
 
-DONT FORGET TO CHECK schema_archi_arcade for every technical detail.
+## Overview
+
+The Core is responsible for managing two dynamic libraries at runtime:
+
+- one graphical module (display)
+- one game module
+
+It handles the main loop by:
+- sending ```ArcadeEvents``` to the game module
+- retrieving ```GameData``` from the game
+- passing the data to the display module for rendering
+
+
+
+## Adding a Graphical Library
+
+### 1. Implement ```IDisplayModule```
+
+Create a class that publicly inherits from ```IDisplayModule```.
+
+### 2. Expose required entry points
+
+Your shared library (```.so```) must export the following symbols:
+
+- ```getInstance```: returns a pointer to your display module instance
+- ```getType```: returns a ```LibType```
+
+### 3. Implement rendering
+
+You must implement:
+
+```bash
+draw(GameData data)
+```
+
+Where ```GameData``` contains:
+
+- ```data.bitmap```  
+  A ```std::map<std::pair<size_t, size_t>, ACube>``` representing the game grid
+
+- ```data.text```  
+  A ```std::vector<ArcadeText>``` used for HUD elements (score, labels, etc.)
+
+- ```data.GameOver```  
+  A boolean indicating whether the game has ended
+
+### 4. Build the library
+
+Compile your module as a shared library (```.so```) and place it in:
+
+```bash
+./lib/
+```
+
+The ```DLLoader``` will automatically detect and load it.
+
+
+
+## Adding a Game
+
+### 1. Implement ```IGameModule```
+
+Create a class that publicly inherits from ```IGameModule```.
+
+### 2. Expose required entry points
+
+Your shared library (```.so```) must export:
+
+- ```getInstance```: returns a pointer to your game instance
+- ```getType```: returns a ```LibType```
+
+### 3. Handle events
+
+The ```update()``` function is called every frame with the latest ```ArcadeEvents```.
+
+You must:
+- process input events
+- update your game state accordingly
+
+### 4. Provide game data
+
+Implement:
+
+```bash
+getGameData()
+```
+
+This function must return a ```GameData``` structure used by the display module.
+
+### 5. Build the library
+
+Compile your game as a shared library (```.so```) and place it in:
+
+```bash
+./lib/
+```
+
+
+
+## Important
+
+Make sure all your libraries are placed in the ```./lib/``` directory so they can be loaded dynamically.
+
+For full technical details and architecture diagrams, refer to:
+
+```
+schema_archi_arcade
+```
