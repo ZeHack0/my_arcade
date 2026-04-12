@@ -160,7 +160,6 @@ namespace arcade {
             int maxY, maxX;
             getmaxyx(stdscr, maxY, maxX);
 
-            //mvprintw(0, 0, "bullets: %lu", data.bitmap.size());
 
             for (auto& [pos, cube] : data.bitmap) {
                 int col = static_cast<int>(pos.first);
@@ -178,8 +177,18 @@ namespace arcade {
                 }
             }
 
-            for (auto it : data.text)
-                mvprintw(it.BeginPos.second, it.BeginPos.first, "%s", it.text.c_str());
+            int Ytext;
+            int XText;
+            getmaxyx(stdscr, Ytext, XText);
+
+            for (auto it : data.text) {
+                int col = (it.BeginPos.first  * XText) / 1920;
+                int row = (it.BeginPos.second * Ytext) / 1080;
+
+                if (row >= Ytext || col >= XText || row < 0 || col < 0)
+                    continue;
+                mvprintw(row, col, "%s", it.text.c_str());
+            }
         }
 
         void display() override {
