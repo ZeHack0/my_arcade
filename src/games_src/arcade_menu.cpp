@@ -106,6 +106,7 @@ namespace arcade {
             void update(ArcadeEvents ev, clock_t clock) override {
                     (void)clock;
                     (void)ev;
+            }
 
             GameData getGameData() override {
                     return _data;
